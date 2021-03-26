@@ -1,0 +1,13 @@
+prometheus:
+  enabled: true
+
+annotations:
+  prometheus.io/port: "3031"
+
+memcached:
+  resources:
+    requests:
+      cpu: 
+      memory: 512Mi
+
+
