@@ -32,6 +32,9 @@ kubectl create ns cluster-baseline-settings
 Install Flux Helm chart. Make sure you are using the right values depending on the desired configuration.
 ```bash
 
+# change to this directory
+cd enterprise_scale/construction_sets/aks/online/aks_secure_baseline/cluster-baseline-settings
+
 # Set your target git url
 # example: export Git_Url=https://github.com/retaildevcrews/caf-terraform-landingzones-starter.git
 export Git_Url=[your git url]
