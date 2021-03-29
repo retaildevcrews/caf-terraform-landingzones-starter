@@ -4,6 +4,9 @@ prometheus:
 annotations:
   prometheus.io/port: "3031"
 
+nodeSelector:
+  agentpool: "npuser01"
+
 memcached:
   resources:
     requests:
