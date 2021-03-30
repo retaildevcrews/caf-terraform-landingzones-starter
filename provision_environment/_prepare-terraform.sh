@@ -33,7 +33,7 @@ function parse_args()
   while getopts "hf" opt; do
     case ${opt} in
       h ) # process option h
-        
+        print_usage
         exit 1
         ;;
       f ) # process option f
@@ -43,7 +43,7 @@ function parse_args()
         NO_CLOBBER=1
         ;;        
       ? ) 
-        echo "Usage: prepare-terraform [-h] [-f] [-w] [-n]"
+        print_usage
         exit 1
         ;;
     esac
@@ -130,11 +130,9 @@ function create_from_keyvault()
     export svc_ppl_TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
     export svc_ppl_SUB_ID=$(echo $ACCOUNT | jq -r ".id")
 
-    export svc_ppl_CLIENT_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientSecret | jq -r ".value") #$(az ad sp create-for-rbac -n http://${svc_ppl_Name}-tf-sp-${svc_ppl_Environment} --query password -o tsv)
-    export svc_ppl_CLIENT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientId | jq -r ".value") #$(az ad sp show --id http://${svc_ppl_Name}-tf-sp-${svc_ppl_Environment} --query appId -o tsv)
-    # export svc_ppl_GRAPH_SP_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name graphAppClientSecret | jq -r ".value") #$(az ad sp create-for-rbac --skip-assignment -n http://${svc_ppl_Name}-graph-${svc_ppl_Environment} --query password -o tsv)
-    # export svc_ppl_GRAPH_SP_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name graphAppClientId | jq -r ".value") #$(az ad sp show --id http://${svc_ppl_Name}-graph-${svc_ppl_Environment} --query appId -o tsv)
-
+    export svc_ppl_CLIENT_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientSecret | jq -r ".value")
+    export svc_ppl_CLIENT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientId | jq -r ".value")
+    
     if [ $NO_CLOBBER -eq 0 ] 
     then
         # create terraform.tfvars and replace template values
