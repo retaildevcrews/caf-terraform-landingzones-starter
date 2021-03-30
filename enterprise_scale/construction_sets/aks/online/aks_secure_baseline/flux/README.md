@@ -33,7 +33,7 @@ Install Flux Helm chart. Make sure you are using the right values depending on t
 ```bash
 
 # change to this directory
-cd enterprise_scale/construction_sets/aks/online/aks_secure_baseline/cluster-baseline-settings
+cd enterprise_scale/construction_sets/aks/online/aks_secure_baseline
 
 # Set your target git url
 # example: export Git_Url=https://github.com/retaildevcrews/caf-terraform-landingzones-starter.git
