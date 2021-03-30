@@ -22,15 +22,10 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
 - Ingress Network Policy
 - Kured
 
-  ```bash
-  # Deploy Baseline components via Flux
-  kubectl apply -f online/aks_secure_baseline/cluster-baseline-settings/flux.yaml
-  # Watch Flux deployment, Ctrl-C to quit
-  kubectl get po -n cluster-baseline-settings -w
-  ```
 
-Flux will pull from [cluster-baseline-settings](./cluster-baseline-settings) and synchronize the folder to AKS.
-If there is a need to change the folder to your own folk, please modify [flux.yaml](cluster-baseline-settings/flux.yaml) --git-url args
+## Install Flux
+- To install and configure Flux in the cluster, the instructions can be found [here](./flux/README.md).
+
 
 ## Deploy sample workload
 
