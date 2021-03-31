@@ -15,8 +15,20 @@ Parameter | Description | Default value | Required
 -l \|--location     | The Azure location    | centralus | No
 -t \|--tenant-name  | The tenant name abbreviation | N/A | Yes
 
+You also need to be logged into your Azure subscription and set a default subscription for the script to use.
+
 Sample usage:
 
 ```bash
+# Log into Azure
+az login
+
+# show your Azure accounts
+az account list -o table
+
+# select an Azure account
+az account set -s {subscription name or id}
+
+# Run the script
 ./provision-environment.sh -a myapp -t <your tenant name> -f
 ```

@@ -19,6 +19,11 @@ function to_lower()
     echo $(echo "$1" |  tr '[:upper:]' '[:lower:]' )
 }
 
+function remove_none_alphnum()
+{
+    echo $(echo $1 | tr -d -c '[:alnum:]')
+}
+
 TYPE=""
 NAME=""
 ENV=""
@@ -79,7 +84,7 @@ case $TYPE in
         echo "rg-$(to_lower $NAME)-$(to_lower $TENANT)-$(to_lower $ENV)"
         ;;
     storageaccount )
-        echo "$(to_lower $NAME)$(to_lower $TENANT)$(to_lower $ENV)"
+        echo $(remove_none_alphnum "$(to_lower $NAME)$(to_lower $TENANT)$(to_lower $ENV)")
         ;;
     cosmosaccount )
         echo "cdb-$(to_lower $NAME)-$(to_lower $TENANT)-$(to_lower $ENV)"
