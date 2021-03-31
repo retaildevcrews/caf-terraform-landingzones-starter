@@ -1,5 +1,4 @@
 LOCATION         = "<<svc_ppl_Location>>"
-REPO             = "<<svc_ppl_Repo>>"
 NAME             = "<<svc_ppl_Name>>"
 SHORTNAME        = "<<svc_ppl_ShortName>>"
 ENV              = "<<svc_ppl_Environment>>"
