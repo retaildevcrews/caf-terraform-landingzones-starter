@@ -163,6 +163,41 @@ function create_new_deployment()
   # A link on role assignment https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli
   # A link to available roles https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
+# Get MSGraphId
+  export graphId=$(az ad sp list --query "[?appDisplayName=='Microsoft Graph'].appId | [0]" --all) 
+  graphId=$(eval echo $graphId)
+  echo "Service MSGraph AppID: " $graphId
+
+  # Get MSGraph Permission variables
+  export appReadWriteAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Application.ReadWrite.All'].id | [0]") 
+  appReadWriteAll=$(eval echo $appReadWriteAll)
+  echo "Application.ReadWrite.All ID: " $appReadWriteAll
+
+  export dirReadAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Directory.Read.All'].id | [0]") 
+  dirReadAll=$(eval echo $dirReadAll)
+  echo "Directory.Read.All ID:" $dirReadAll
+
+  export appRoleAppReadWriteAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Application.ReadWrite.All'].id | [0]") 
+  appRoleAppReadWriteAll=$(eval echo $appRoleAppReadWriteAll)
+  echo "Application- Application.ReadWrite.All ID: " $appRoleAppReadWriteAll
+
+  export appRoleDirReadAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Directory.Read.All'].id | [0]") 
+  appRoleDirReadAll=$(eval echo $appRoleDirReadAll)
+  echo "application- Directory.Read.All id:" $appRoleDirReadAll
+
+  # Add App persmission
+  az ad app permission add --id $servicePricipalId --api $graphId --api-permissions $dirReadAll=Scope $appReadWriteAll=Scope $appRoleDirReadAll=Role $appRoleAppReadWriteAll=Role
+
+  # Make permissions effective
+  az ad app permission grant --id $servicePricipalId --api $graphId
+
+  # Add Contributor and User Access Administrator Roles required by CAF
+  export servicePrincipalObjId=$(az ad sp show --id $servicePricipalId --query objectId -o tsv)
+  servicePrincipalObjId=$(eval echo $servicePrincipalObjId)
+  echo "Service Principal Object ID: " $servicePrincipalObjId
+
+  az role assignment create --assignee $servicePrincipalObjId --role "Contributor" --subscription $svc_ppl_SUB_ID
+  az role assignment create --assignee $servicePrincipalObjId --role "User Access Administrator" --subscription $svc_ppl_SUB_ID
 
   # Admin consent
   az ad app permission admin-consent --id $servicePricipalId
