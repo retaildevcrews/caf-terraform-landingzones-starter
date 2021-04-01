@@ -106,7 +106,6 @@ cd $REPO_ROOT/enterprise_scale/construction_sets/aks/online/aks_secure_baseline/
 export CHART_REPO=$(pwd)
 
 
-```bash
 
 # Install NGSA using the upstream ngsa image from GitHub Container Registry
 
