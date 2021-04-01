@@ -114,8 +114,4 @@ helm install ngsa-aks ngsa -f chart.yaml --namespace ngsa
 
 # Note: Above command creates a ngsa cosmos deployment named ngsa-aks
 
-## <<<<<<<<<<<<<<<<<<<<<   TODO    >>>>>>>>>>>>>>>>>>>>>
-#   needs to be memory deployment instead cosmos 
-
-
 ```
