@@ -282,7 +282,7 @@ function Initialize_Terraform()
     if [ ! -d ./.terraform ] || [ $INIT -eq 1 ]
     then
       # The TF variables are initialized in _prepare-terraform
-        terraform init -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate"
+        ( cd "../enterprise_scale/construction_sets/aks" && terraform init -upgrade -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate" )
     fi
 }
 
@@ -299,5 +299,5 @@ parse_args "$@"
 Prepare_Environment
 
 # TODO: pending integration with the TF script
-#Initialize_Terraform
+Initialize_Terraform
 #Validate_Terraform
