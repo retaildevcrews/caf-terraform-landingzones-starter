@@ -279,12 +279,6 @@ function Prepare_Environment()
 
 function Initialize_Terraform()
 {
-  echo "INITIALIZE TERRAFORM"
-  printenv
-  echo "Service Principal TenantID: " $ARM_TENANT_ID
-  echo "Service Principal SUBID: " $ARM_SUBSCRIPTION_ID
-  echo "Service Principal ClientID: " $ARM_CLIENT_ID
-  echo "Service Principal ClientSecret: " $ARM_CLIENT_SECRET
   if [ ! -d ./.terraform ] || [ $INIT -eq 1 ]
   then
     # The TF variables are initialized in _prepare-terraform

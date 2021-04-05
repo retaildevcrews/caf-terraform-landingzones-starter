@@ -164,22 +164,22 @@ variable "TENANT_NAME" {
     type = string
 }
 
-variable "TF_TENANT_ID" {
+variable "TENANT_ID" {
     description = ""
     type = string
 }
 
-variable "TF_SUB_ID" {
+variable "SUBSCRIPTION_ID" {
     description = ""
     type = string
 }
 
-variable "TF_CLIENT_ID" {
+variable "CLIENT_ID" {
     description = ""
     type = string
 }
 
-variable "TF_CLIENT_SECRET" {
+variable "CLIENT_SECRET" {
     description = ""
     type = string
 }
