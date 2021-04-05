@@ -41,8 +41,8 @@ function parse_args()
         ;;
       n ) # process option n
         NO_CLOBBER=1
-        ;;        
-      ? ) 
+        ;;
+      ? )
         print_usage
         exit 1
         ;;
@@ -125,15 +125,15 @@ function create_tfvars()
 function create_from_keyvault()
 {
     # ============== CREATE TFVARS =================
-    
+
     # store az info into variables
     export TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
     export SUB_ID=$(echo $ACCOUNT | jq -r ".id")
 
     export CLIENT_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientSecret | jq -r ".value")
     export CLIENT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientId | jq -r ".value")
-    
-    if [ $NO_CLOBBER -eq 0 ] 
+
+    if [ $NO_CLOBBER -eq 0 ]
     then
         # create terraform.tfvars and replace template values
         create_tfvars
@@ -160,29 +160,25 @@ function create_new_deployment()
   servicePricipalId=$(eval echo $servicePricipalId)
   echo "Service Principal AppID: " $servicePricipalId
 
-  ## TODO: Add needed roles/permissions to the SP!
-  # A link on role assignment https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli
-  # A link to available roles https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
-
 # Get MSGraphId
-  export graphId=$(az ad sp list --query "[?appDisplayName=='Microsoft Graph'].appId | [0]" --all) 
+  export graphId=$(az ad sp list --query "[?appDisplayName=='Microsoft Graph'].appId | [0]" --all)
   graphId=$(eval echo $graphId)
   echo "Service MSGraph AppID: " $graphId
 
   # Get MSGraph Permission variables
-  export appReadWriteAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Application.ReadWrite.All'].id | [0]") 
+  export appReadWriteAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Application.ReadWrite.All'].id | [0]")
   appReadWriteAll=$(eval echo $appReadWriteAll)
   echo "Application.ReadWrite.All ID: " $appReadWriteAll
 
-  export dirReadAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Directory.Read.All'].id | [0]") 
+  export dirReadAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Directory.Read.All'].id | [0]")
   dirReadAll=$(eval echo $dirReadAll)
   echo "Directory.Read.All ID:" $dirReadAll
 
-  export appRoleAppReadWriteAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Application.ReadWrite.All'].id | [0]") 
+  export appRoleAppReadWriteAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Application.ReadWrite.All'].id | [0]")
   appRoleAppReadWriteAll=$(eval echo $appRoleAppReadWriteAll)
   echo "Application- Application.ReadWrite.All ID: " $appRoleAppReadWriteAll
 
-  export appRoleDirReadAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Directory.Read.All'].id | [0]") 
+  export appRoleDirReadAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Directory.Read.All'].id | [0]")
   appRoleDirReadAll=$(eval echo $appRoleDirReadAll)
   echo "application- Directory.Read.All id:" $appRoleDirReadAll
 
