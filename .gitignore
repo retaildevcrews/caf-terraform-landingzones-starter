@@ -19,3 +19,4 @@ landing_zone_aks
 **/*.pem
 **/*.cer
 landing_zone_data_analytics
+terraform.tfvars
