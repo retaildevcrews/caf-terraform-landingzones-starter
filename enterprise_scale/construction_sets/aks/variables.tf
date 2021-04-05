@@ -163,3 +163,23 @@ variable "TENANT_NAME" {
     description = ""
     type = string
 }
+
+variable "TF_TENANT_ID" {
+    description = ""
+    type = string
+}
+
+variable "TF_SUB_ID" {
+    description = ""
+    type = string
+}
+
+variable "TF_CLIENT_ID" {
+    description = ""
+    type = string
+}
+
+variable "TF_CLIENT_SECRET" {
+    description = ""
+    type = string
+}
