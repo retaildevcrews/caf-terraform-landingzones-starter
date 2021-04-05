@@ -114,10 +114,10 @@ function create_tfvars()
         sed "s|<<svc_ppl_Location>>|$svc_ppl_Location|" | \
         sed "s|<<svc_ppl_Environment>>|$svc_ppl_Environment|" | \
         sed "s|<<svc_ppl_TenantName>>|$svc_ppl_TenantName|" | \
-        sed "s|<<svc_ppl_TENANT_ID>>|$svc_ppl_TENANT_ID|" | \
-        sed "s|<<svc_ppl_SUB_ID>>|$svc_ppl_SUB_ID|" | \
-        sed "s|<<svc_ppl_CLIENT_SECRET>>|$svc_ppl_CLIENT_SECRET|" | \
-        sed "s|<<svc_ppl_CLIENT_ID>>|$svc_ppl_CLIENT_ID|" > terraform.tfvars
+        sed "s|<<ARM_TENANT_ID>>|$ARM_TENANT_ID|" | \
+        sed "s|<<ARM_SUBSCRIPTION_ID>>|$ARM_SUBSCRIPTION_ID|" | \
+        sed "s|<<ARM_CLIENT_SECRET>>|$ARM_CLIENT_SECRET|" | \
+        sed "s|<<ARM_CLIENT_ID>>|$ARM_CLIENT_ID|" > terraform.tfvars
 
     echo -e "${green}\tterraform.tfvars created${reset}"
 }
@@ -127,11 +127,11 @@ function create_from_keyvault()
     # ============== CREATE TFVARS =================
     
     # store az info into variables
-    export svc_ppl_TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
-    export svc_ppl_SUB_ID=$(echo $ACCOUNT | jq -r ".id")
+    export ARM_TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
+    export ARM_SUB_ID=$(echo $ACCOUNT | jq -r ".id")
 
-    export svc_ppl_CLIENT_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientSecret | jq -r ".value")
-    export svc_ppl_CLIENT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientId | jq -r ".value")
+    export ARM_CLIENT_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientSecret | jq -r ".value")
+    export ARM_CLIENT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientId | jq -r ".value")
     
     if [ $NO_CLOBBER -eq 0 ] 
     then
@@ -145,17 +145,21 @@ function create_new_deployment()
 {
   # ============== CREATE TFVARS =================
   # store az info into variables
-  export svc_ppl_TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
-  export svc_ppl_SUB_ID=$(echo $ACCOUNT | jq -r ".id")
-  export svc_ppl_CLIENT_SECRET=$(az ad sp create-for-rbac --skip-assignment -n http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query password -o tsv)
-  export svc_ppl_CLIENT_ID=$(az ad sp show --id http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query appId -o tsv)
-  
+  echo "ACCOUNT: " $ACCOUNT
+  export ARM_TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
+  export ARM_SUBSCRIPTION_ID=$(echo $ACCOUNT | jq -r ".id")
+  export ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --skip-assignment -n http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query password -o tsv)
+  export ARM_CLIENT_ID=$(az ad sp show --id http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query appId -o tsv)
+  echo "Service Principal TenantID: " $ARM_TENANT_ID
+  echo "Service Principal SUBID: " $ARM_SUBSCRIPTION_ID
+  echo "Service Principal ClientID: " $ARM_CLIENT_ID
+  echo "Service Principal ClientSecret: " $ARM_CLIENT_SECRET
   create_tfvars
 
   # ============== CREATE RESOURCES =================
   # Grant Application.ReadWrite.All and Directory.Read.All API access to Service Principal (${svc_ppl_Name}-tf-sp)
   # Get service principal App ID
-  export servicePricipalId=$svc_ppl_CLIENT_ID #$(az ad sp list --query "[?appDisplayName=='${svc_ppl_Name}-tf-sp-${svc_ppl_Environment}'].appId | [0]" --all) 
+  export servicePricipalId=$ARM_CLIENT_ID #$(az ad sp list --query "[?appDisplayName=='${svc_ppl_Name}-tf-sp-${svc_ppl_Environment}'].appId | [0]" --all) 
   servicePricipalId=$(eval echo $servicePricipalId)
   echo "Service Principal AppID: " $servicePricipalId
 
@@ -196,8 +200,8 @@ function create_new_deployment()
   servicePrincipalObjId=$(eval echo $servicePrincipalObjId)
   echo "Service Principal Object ID: " $servicePrincipalObjId
 
-  az role assignment create --assignee $servicePrincipalObjId --role "Contributor" --subscription $svc_ppl_SUB_ID
-  az role assignment create --assignee $servicePrincipalObjId --role "User Access Administrator" --subscription $svc_ppl_SUB_ID
+  az role assignment create --assignee $servicePrincipalObjId --role "Contributor" --subscription $ARM_SUBSCRIPTION_ID
+  az role assignment create --assignee $servicePrincipalObjId --role "User Access Administrator" --subscription $ARM_SUBSCRIPTION_ID
 
   # Admin consent
   az ad app permission admin-consent --id $servicePricipalId

@@ -279,11 +279,17 @@ function Prepare_Environment()
 
 function Initialize_Terraform()
 {
-    if [ ! -d ./.terraform ] || [ $INIT -eq 1 ]
-    then
-      # The TF variables are initialized in _prepare-terraform
-        ( cd "../enterprise_scale/construction_sets/aks" && terraform init -upgrade -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate" )
-    fi
+  echo "INITIALIZE TERRAFORM"
+  printenv
+  echo "Service Principal TenantID: " $ARM_TENANT_ID
+  echo "Service Principal SUBID: " $ARM_SUBSCRIPTION_ID
+  echo "Service Principal ClientID: " $ARM_CLIENT_ID
+  echo "Service Principal ClientSecret: " $ARM_CLIENT_SECRET
+  if [ ! -d ./.terraform ] || [ $INIT -eq 1 ]
+  then
+    # The TF variables are initialized in _prepare-terraform
+      ( cd "../enterprise_scale/construction_sets/aks" && terraform init -upgrade -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate" )
+  fi
 }
 
 function Validate_Terraform()
