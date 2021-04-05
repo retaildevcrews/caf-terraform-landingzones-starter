@@ -117,7 +117,7 @@ function create_tfvars()
         sed "s|<<ARM_TENANT_ID>>|$ARM_TENANT_ID|" | \
         sed "s|<<ARM_SUBSCRIPTION_ID>>|$ARM_SUBSCRIPTION_ID|" | \
         sed "s|<<ARM_CLIENT_SECRET>>|$ARM_CLIENT_SECRET|" | \
-        sed "s|<<ARM_CLIENT_ID>>|$ARM_CLIENT_ID|" > terraform.tfvars
+        sed "s|<<ARM_CLIENT_ID>>|$ARM_CLIENT_ID|" > ../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars
 
     echo -e "${green}\tterraform.tfvars created${reset}"
 }
