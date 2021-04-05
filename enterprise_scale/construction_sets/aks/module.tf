@@ -5,16 +5,16 @@ module "caf" {
   global_settings      = var.global_settings
   logged_user_objectId = var.logged_user_objectId
   tags                 = var.tags
-  resource_groups      = var.resource_groups
+  resource_groups      = local.resource_groups_interface
   azuread_apps         = var.azuread_apps
   azuread_users        = var.azuread_users
   azuread_groups       = var.azuread_groups
   keyvaults            = var.keyvaults
-  managed_identities   = var.managed_identities
+  managed_identities   = local.managed_identities_interface
   role_mapping         = var.role_mapping
 
   networking = {
-    application_gateways                                    = var.application_gateways
+    application_gateways                                    = local.application_gateways_interface
     application_gateway_applications                        = var.application_gateway_applications
     domain_name_registrations                               = var.domain_name_registrations
     dns_zone_records                                        = var.dns_zone_records
@@ -40,7 +40,7 @@ module "caf" {
   }
 
   compute = {
-    aks_clusters     = var.aks_clusters
+    aks_clusters     = local.aks_clusters_interface
     bastion_hosts    = var.bastion_hosts
     virtual_machines = var.virtual_machines
   }

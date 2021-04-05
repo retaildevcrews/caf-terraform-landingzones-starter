@@ -11,6 +11,10 @@ variable "global_settings" {
   }
 }
 
+variable "local_settings" {
+  description = "Local settings for project and environment type."
+}
+
 variable "resource_groups" {
   default = {}
 }
