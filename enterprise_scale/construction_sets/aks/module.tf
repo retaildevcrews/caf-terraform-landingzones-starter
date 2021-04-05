@@ -8,7 +8,7 @@ module "caf" {
   resource_groups      = var.resource_groups
   azuread_apps         = var.azuread_apps
   azuread_users        = var.azuread_users
-  azuread_groups       = var.azuread_groups
+  azuread_groups       = local.azuread_groups_interface
   keyvaults            = var.keyvaults
   managed_identities   = var.managed_identities
   role_mapping         = var.role_mapping
