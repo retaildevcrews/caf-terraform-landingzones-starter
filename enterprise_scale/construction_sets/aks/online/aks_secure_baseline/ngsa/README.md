@@ -128,7 +128,7 @@ kubectl create namespace ngsa
 helm install ngsa-aks ngsa -f ./ngsa/helm-config-ngsa-memory.yaml --namespace ngsa
 
 # Verify that the application was succesfully deployed
-kubectl get pods -n cluster-baseline-settings
+kubectl get pods -n ngsa
 
 # Check logs, you should see several entries with Status 200 for Healthz
 kubectl logs <pod name> -n ngsa
