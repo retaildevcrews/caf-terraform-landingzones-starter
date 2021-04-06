@@ -3,7 +3,7 @@ global_settings = {
   regions = {
     region1 = "centralus"
   }
-  prefix = "nakohli"
+  prefix = ""
   passthrough    = false
   random_length  = 0
 }
