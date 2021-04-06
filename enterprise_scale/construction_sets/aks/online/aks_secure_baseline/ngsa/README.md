@@ -131,7 +131,7 @@ helm install ngsa-aks ngsa -f ./ngsa/helm-config-ngsa-memory.yaml --namespace ng
 kubectl get pods -n cluster-baseline-settings
 
 # Check logs, you should see several entries with Status 200 for Healthz
-kubectl logs <pod name> -n cluster-baseline-settings
+kubectl logs <pod name> -n ngsa
 
 # Uninstall NGSA using the ngsa helm chart
 helm uninstall ngsa-aks --namespace ngsa
