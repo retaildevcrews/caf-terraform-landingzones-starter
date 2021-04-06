@@ -145,7 +145,6 @@ function create_new_deployment()
 {
   # ============== CREATE TFVARS =================
   # store az info into variables
-  echo "ACCOUNT: " $ACCOUNT
   export TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
   export SUBSCRIPTION_ID=$(echo $ACCOUNT | jq -r ".id")
   export CLIENT_SECRET=$(az ad sp create-for-rbac --skip-assignment -n http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query password -o tsv)
@@ -153,12 +152,9 @@ function create_new_deployment()
 
   create_tfvars
 
-  # ============== CREATE RESOURCES =================
-  # Grant Application.ReadWrite.All and Directory.Read.All API access to Service Principal (${svc_ppl_Name}-tf-sp)
-  # Get service principal App ID
-  export servicePricipalId=$CLIENT_ID #$(az ad sp list --query "[?appDisplayName=='${svc_ppl_Name}-tf-sp-${svc_ppl_Environment}'].appId | [0]" --all) 
-  servicePricipalId=$(eval echo $servicePricipalId)
-  echo "Service Principal AppID: " $servicePricipalId
+  # ============== SP PERMISSIONS =================
+  # TODO: To be addressed in a future issue if we need these MSGraph permissions
+  # More info at https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_configuration#method-2-api-access-with-admin-consent
 
   # Get MSGraphId
   export graphId=$(az ad sp list --query "[?appDisplayName=='Microsoft Graph'].appId | [0]" --all)
@@ -166,38 +162,33 @@ function create_new_deployment()
   echo "Service MSGraph AppID: " $graphId
 
   # Get MSGraph Permission variables
-  export appReadWriteAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Application.ReadWrite.All'].id | [0]")
-  appReadWriteAll=$(eval echo $appReadWriteAll)
-  echo "Application.ReadWrite.All ID: " $appReadWriteAll
-
-  export dirReadAll=$(az ad sp show --id $graphId --query "oauth2Permissions[?value=='Directory.Read.All'].id | [0]")
-  dirReadAll=$(eval echo $dirReadAll)
-  echo "Directory.Read.All ID:" $dirReadAll
 
   export appRoleAppReadWriteAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Application.ReadWrite.All'].id | [0]")
   appRoleAppReadWriteAll=$(eval echo $appRoleAppReadWriteAll)
   echo "Application- Application.ReadWrite.All ID: " $appRoleAppReadWriteAll
 
-  export appRoleDirReadAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Directory.Read.All'].id | [0]")
+  export appRoleDirReadAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Directory.ReadWrite.All'].id | [0]")
   appRoleDirReadAll=$(eval echo $appRoleDirReadAll)
   echo "application- Directory.Read.All id:" $appRoleDirReadAll
 
   # Add App persmission
-  az ad app permission add --id $servicePricipalId --api $graphId --api-permissions $dirReadAll=Scope $appReadWriteAll=Scope $appRoleDirReadAll=Role $appRoleAppReadWriteAll=Role
+  az ad app permission add --id $CLIENT_ID --api $graphId --api-permissions $appRoleDirReadAll=Role $appRoleAppReadWriteAll=Role
 
   # Make permissions effective
-  az ad app permission grant --id $servicePricipalId --api $graphId
+  az ad app permission grant --id $CLIENT_ID --api $graphId
+
+  # Admin consent
+  # az ad app permission admin-consent --id $CLIENT_ID
 
   # Add Contributor and User Access Administrator Roles required by CAF
-  export servicePrincipalObjId=$(az ad sp show --id $servicePricipalId --query objectId -o tsv)
+  export servicePrincipalObjId=$(az ad sp show --id $CLIENT_ID --query objectId -o tsv)
   servicePrincipalObjId=$(eval echo $servicePrincipalObjId)
   echo "Service Principal Object ID: " $servicePrincipalObjId
 
   az role assignment create --assignee $servicePrincipalObjId --role "Contributor" --subscription $SUBSCRIPTION_ID
   az role assignment create --assignee $servicePrincipalObjId --role "User Access Administrator" --subscription $SUBSCRIPTION_ID
 
-  # Admin consent
-  az ad app permission admin-consent --id $servicePricipalId
+  # ============== CREATE RESOURCES =================
 
   # create tf_state resource group
   echo "Creating the Deployment Resource Group"
