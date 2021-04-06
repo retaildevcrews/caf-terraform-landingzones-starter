@@ -134,6 +134,6 @@ kubectl get pods -n cluster-baseline-settings
 kubectl logs <pod name> -n cluster-baseline-settings
 
 # Uninstall NGSA using the ngsa helm chart
-helm uninstall ngsa-aks --namespace cluster-baseline-settings
+helm uninstall ngsa-aks --namespace ngsa
 
 ```
