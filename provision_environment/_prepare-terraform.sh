@@ -160,7 +160,7 @@ function create_new_deployment()
   servicePricipalId=$(eval echo $servicePricipalId)
   echo "Service Principal AppID: " $servicePricipalId
 
-# Get MSGraphId
+  # Get MSGraphId
   export graphId=$(az ad sp list --query "[?appDisplayName=='Microsoft Graph'].appId | [0]" --all)
   graphId=$(eval echo $graphId)
   echo "Service MSGraph AppID: " $graphId
