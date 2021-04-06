@@ -139,47 +139,47 @@ variable "ip_groups" {
   default = {}
 }
 
-variable "LOCATION" {
+variable "location" {
     description = ""
     type = string
 }
 
-variable "NAME" {
+variable "name" {
     description = ""
     type = string
 }
 
-variable "SHORTNAME" {
+variable "shortname" {
     description = ""
     type = string
 }
 
-variable "ENV" {
+variable "env" {
     description = ""
     type = string
 }
 
-variable "TENANT_NAME" {
+variable "tenant_name" {
     description = ""
     type = string
 }
 
-variable "TENANT_ID" {
+variable "tenant_id" {
     description = ""
     type = string
 }
 
-variable "SUBSCRIPTION_ID" {
+variable "subscription_id" {
     description = ""
     type = string
 }
 
-variable "CLIENT_ID" {
+variable "client_id" {
     description = ""
     type = string
 }
 
-variable "CLIENT_SECRET" {
+variable "client_secret" {
     description = ""
     type = string
 }
