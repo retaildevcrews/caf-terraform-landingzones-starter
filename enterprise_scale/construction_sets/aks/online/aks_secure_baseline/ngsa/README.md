@@ -10,7 +10,7 @@ Change into the base directory of the repo
 
 ```bash
 
-cd caf-terraform-landingzones-starter/enterprise_scale/construction_sets/aks/online/aks_secure_baseline/ngsa
+cd caf-terraform-landingzones-starter
 
 export REPO_ROOT=$(pwd)
 
