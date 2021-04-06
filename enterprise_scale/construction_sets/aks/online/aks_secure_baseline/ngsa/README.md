@@ -2,6 +2,7 @@
 
 ### Prerequisites
 
+- Infrastructure provisioned by Terraform CAF aks-secure-baseline project must already exist.
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
 
 
