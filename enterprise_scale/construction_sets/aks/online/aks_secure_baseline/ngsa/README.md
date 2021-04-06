@@ -83,34 +83,56 @@ Add the required helm repositories
 ```bash
 
 helm repo add stable https://charts.helm.sh/stable
-helm repo add kedacore https://kedacore.github.io/charts
-helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 ```
 
-## Deploy NGSA with Helm
+## Add GitHub Packages (ghcr.io) to firewall white list
 
 ```bash
-# <<<<<<<<<<<<<<<<<<<< TODO >>>>>>>>>>>>>>>>>>>>
+From Azure portal locate and navigate the vNet-Hub resource group created by Infrastructure Provisioning, e.g. vnet-hub-re1, then locate the egress firewall resource.
 
-#  This description needs to be updated 
+Go to packages application rule collection by navigating to:
 
+[Egress Firwall] > [Setting] > [Rules(Classic)] > [Application rule collection] > [Packages]
+
+Add the a new Target FQDN
 ```
-The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing. Alternatively, the helm chart can be deployed in a GitOps CICD approach. GitOps allows the automated deployment of the application to the cluster using FluxCD in which the configuration of the application is stored in Git.([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)).
+
+| **name**  | **Source type** |      **Source**     | **Protocol:Port** | **Target FQDNs** |
+|-----------|-----------------|---------------------|-------------------|------------------|
+| ghcr      | IP Group        |same as Docker entry |     Https:443     |     ghcr.io      |
+
+```bash
+# Note: This step will be automated on a later Infrastructure Provisioning release.
+# if you skip this step, the pod will not be able to download the image.
+```
+
+
+## Deploy NGSA with Helm
+```bash
+The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing.
+```
 
 ```bash
 
-cd $REPO_ROOT/enterprise_scale/construction_sets/aks/online/aks_secure_baseline/ngsa
-
-export CHART_REPO=$(pwd)
-
+Navigate to 
+cd $REPO_ROOT/enterprise_scale/construction_sets/aks/online/aks_secure_baseline
 
 
-# Install NGSA using the upstream ngsa image from GitHub Container Registry
+# Create cluster secure baseline namespace
+kubectl create namespace cluster-baseline-settings
 
-helm install ngsa-aks ngsa -f chart.yaml --namespace ngsa 
+# Install NGSA using the ngsa memory helm chart
+helm install ngsa-aks ngsa -f ./ngsa/helm-config-ngsa-memory.yaml --namespace cluster-baseline-settings
 
-# Note: Above command creates a ngsa cosmos deployment named ngsa-aks
+# Verify that the application was succesfully deployed
+kubectl get pods -n cluster-baseline-settings
+
+# Check logs, you should see several entries with Status 200 for Healthz
+kubectl logs <pod name> -n cluster-baseline-settings
+
+# Uninstall NGSA using the ngsa helm chart
+helm uninstall ngsa-aks --namespace cluster-baseline-settings
 
 ```
