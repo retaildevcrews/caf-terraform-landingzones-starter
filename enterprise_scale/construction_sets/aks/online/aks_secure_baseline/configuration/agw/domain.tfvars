@@ -46,12 +46,12 @@ domain_name_registrations = {
 
     contacts = {
       contactAdmin = {
-        name_first   = "CSE Retail"
-        name_last    = ""
+        name_first   = "CSE"
+        name_last    = "Retail"
         email        = "CSENextGenK8s@microsoft.com"
         phone        = "+1.1234567890"
         organization = "Microsoft"
-        job_title    = ""
+        job_title    = "Dev Crew"
         address1     = "Austin"
         address2     = ""
         postal_code  = "78759"
