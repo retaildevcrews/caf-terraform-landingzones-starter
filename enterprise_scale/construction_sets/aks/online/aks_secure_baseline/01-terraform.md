@@ -31,6 +31,41 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 
 ## Deployment
 
+If deploying using the provision_environment script:
+
+```bash
+# Script to execute from bash shell
+
+# Log into Azure
+az login
+
+# show your Azure accounts
+az account list -o table
+
+# select an Azure account
+az account set -s {subscription name or id}
+
+# If you are running in Azure Cloud Shell, you need to run the following additional command:
+export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
+
+# Run the script in the provision_environment directory
+./provision-environment.sh -a myapp -t <your tenant name> -f
+
+# Go to the AKS construction set folder
+cd ../enterprise_scale/construction_sets/aks
+
+configuration_folder=online/aks_secure_baseline/configuration
+
+# Define the configuration files to apply, all tfvars files within the above folder recursively
+parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
+
+# Trigger the deployment of the resources
+eval terraform apply ${parameter_files}
+
+```
+
+If deploying without the provision_environment script:
+
 ```bash
 # Script to execute from bash shell
 
