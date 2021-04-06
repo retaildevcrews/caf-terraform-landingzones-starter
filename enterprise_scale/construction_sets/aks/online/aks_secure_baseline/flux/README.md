@@ -10,6 +10,17 @@ The following instructions will set up Flux in a Kubernetes cluster for continuo
 - Helm v3
 - [Fluxctl](https://docs.fluxcd.io/en/1.18.0/references/fluxctl.html)
 
+To install Fluxctl on Windows Subsystem for Linux:
+
+```bash
+sudo wget https://github.com/fluxcd/flux/releases/download/1.17.1/fluxctl_windows_amd64 -O /usr/bin/fluxctl && sudo chmod +x /usr/bin/fluxctl
+```
+
+To verify installed
+
+```bash
+fluxctl version
+```
 
 ### Installation Instructions
 
