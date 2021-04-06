@@ -125,7 +125,7 @@ cd $REPO_ROOT/enterprise_scale/construction_sets/aks/online/aks_secure_baseline
 kubectl create namespace ngsa
 
 # Install NGSA using the ngsa memory helm chart
-helm install ngsa-aks ngsa -f ./ngsa/helm-config-ngsa-memory.yaml --namespace cluster-baseline-settings
+helm install ngsa-aks ngsa -f ./ngsa/helm-config-ngsa-memory.yaml --namespace ngsa
 
 # Verify that the application was succesfully deployed
 kubectl get pods -n cluster-baseline-settings
