@@ -251,12 +251,17 @@ function Setup_Global_Environment()
 function Prepare_Terraform()
 {
     ARGS=()
-    if [ -f "terraform.tfvars" ]
+    if [ -f '../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars' ]
     then
         confirm_action "terraform.tfvars exists, overwrite?" 1
         if [ $? -eq 1 ]
         then
             ARGS=("-n") # NO CLOBBER
+        fi
+
+        if [ $? -eq 0 ]
+        then
+            rm "../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars"
         fi
     fi
 

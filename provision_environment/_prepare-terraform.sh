@@ -107,19 +107,19 @@ function validate_environment()
 # a new terraform.tfvars file with this run values.
 function create_tfvars()
 {
-    # create terraform.tfvars and replace template values
-    cat example.tfvars | \
-        sed "s|<<svc_ppl_Name>>|$svc_ppl_Name|" | \
-        sed "s|<<svc_ppl_ShortName>>|$svc_ppl_ShortName|" | \
-        sed "s|<<svc_ppl_Location>>|$svc_ppl_Location|" | \
-        sed "s|<<svc_ppl_Environment>>|$svc_ppl_Environment|" | \
-        sed "s|<<svc_ppl_TenantName>>|$svc_ppl_TenantName|" | \
-        sed "s|<<TENANT_ID>>|$TENANT_ID|" | \
-        sed "s|<<SUBSCRIPTION_ID>>|$SUBSCRIPTION_ID|" | \
-        sed "s|<<CLIENT_SECRET>>|$CLIENT_SECRET|" | \
-        sed "s|<<CLIENT_ID>>|$CLIENT_ID|" > ../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars
+  TF_VARS_FILE_PATH='../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars'
 
-    echo -e "${green}\tterraform.tfvars created${reset}"
+  echo "location=\"$svc_ppl_Location\"" >> $TF_VARS_FILE_PATH
+  echo "name=\"$svc_ppl_Name\"" >> $TF_VARS_FILE_PATH
+  echo "shortname=\"$svc_ppl_ShortName\"" >> $TF_VARS_FILE_PATH
+  echo "env=\"$svc_ppl_Environment\"" >> $TF_VARS_FILE_PATH
+  echo "tenant_name=\"$svc_ppl_TenantName\"" >> $TF_VARS_FILE_PATH
+  echo "tenant_id=\"$TENANT_ID\"" >> $TF_VARS_FILE_PATH
+  echo "subscription_id=\"$SUBSCRIPTION_ID\"" >> $TF_VARS_FILE_PATH
+  echo "client_id=\"$CLIENT_ID\"" >> $TF_VARS_FILE_PATH
+  echo "client_secret=\"$CLIENT_SECRET\"" >> $TF_VARS_FILE_PATH
+
+  echo -e "${green}\tterraform.tfvars created${reset}"
 }
 
 function create_from_keyvault()
