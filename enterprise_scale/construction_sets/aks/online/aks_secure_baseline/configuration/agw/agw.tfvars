@@ -1,7 +1,7 @@
 application_gateways = {
   agw1_az1 = {
     resource_group_key = "agw_re1"
-    name               = "app_gateway"
+    name               = "agw"
     vnet_key           = "vnet_aks_re1"
     subnet_key         = "application_gateway"
     sku_name           = "WAF_v2"
