@@ -20,3 +20,4 @@ landing_zone_aks
 **/*.cer
 landing_zone_data_analytics
 terraform.tfvars
+**/fluxctl-bin
