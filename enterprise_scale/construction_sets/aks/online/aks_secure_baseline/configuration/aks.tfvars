@@ -1,6 +1,6 @@
 aks_clusters = {
   cluster_re1 = {
-    name               = "akscluster-re1-001"
+    name               = "akscluster"
     resource_group_key = "aks_re1"
     os_type            = "Linux"
     
@@ -29,6 +29,7 @@ aks_clusters = {
       enabled = true
       azure_active_directory = {
         managed = true
+        admin_group_object_names = ["aks-cluster-admins"]
       }
     }
 
@@ -68,7 +69,7 @@ aks_clusters = {
       }
     }
 
-    node_resource_group_name = "aks-nodes-re1"
+    node_resource_group_name = "aks-nodes"
 
     node_pools = {
       pool1 = {

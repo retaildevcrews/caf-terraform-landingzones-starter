@@ -41,8 +41,8 @@ function parse_args()
         ;;
       n ) # process option n
         NO_CLOBBER=1
-        ;;        
-      ? ) 
+        ;;
+      ? )
         print_usage
         exit 1
         ;;
@@ -107,33 +107,33 @@ function validate_environment()
 # a new terraform.tfvars file with this run values.
 function create_tfvars()
 {
-    # create terraform.tfvars and replace template values
-    cat example.tfvars | \
-        sed "s|<<svc_ppl_Name>>|$svc_ppl_Name|" | \
-        sed "s|<<svc_ppl_ShortName>>|$svc_ppl_ShortName|" | \
-        sed "s|<<svc_ppl_Location>>|$svc_ppl_Location|" | \
-        sed "s|<<svc_ppl_Environment>>|$svc_ppl_Environment|" | \
-        sed "s|<<svc_ppl_TenantName>>|$svc_ppl_TenantName|" | \
-        sed "s|<<svc_ppl_TENANT_ID>>|$svc_ppl_TENANT_ID|" | \
-        sed "s|<<svc_ppl_SUB_ID>>|$svc_ppl_SUB_ID|" | \
-        sed "s|<<svc_ppl_CLIENT_SECRET>>|$svc_ppl_CLIENT_SECRET|" | \
-        sed "s|<<svc_ppl_CLIENT_ID>>|$svc_ppl_CLIENT_ID|" > terraform.tfvars
+  TF_VARS_FILE_PATH='../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars'
 
-    echo -e "${green}\tterraform.tfvars created${reset}"
+  echo "location=\"$svc_ppl_Location\"" >> $TF_VARS_FILE_PATH
+  echo "name=\"$svc_ppl_Name\"" >> $TF_VARS_FILE_PATH
+  echo "shortname=\"$svc_ppl_ShortName\"" >> $TF_VARS_FILE_PATH
+  echo "env=\"$svc_ppl_Environment\"" >> $TF_VARS_FILE_PATH
+  echo "tenant_name=\"$svc_ppl_TenantName\"" >> $TF_VARS_FILE_PATH
+  echo "tenant_id=\"$TENANT_ID\"" >> $TF_VARS_FILE_PATH
+  echo "subscription_id=\"$SUBSCRIPTION_ID\"" >> $TF_VARS_FILE_PATH
+  echo "client_id=\"$CLIENT_ID\"" >> $TF_VARS_FILE_PATH
+  echo "client_secret=\"$CLIENT_SECRET\"" >> $TF_VARS_FILE_PATH
+
+  echo -e "${green}\tterraform.tfvars created${reset}"
 }
 
 function create_from_keyvault()
 {
     # ============== CREATE TFVARS =================
-    
-    # store az info into variables
-    export svc_ppl_TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
-    export svc_ppl_SUB_ID=$(echo $ACCOUNT | jq -r ".id")
 
-    export svc_ppl_CLIENT_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientSecret | jq -r ".value")
-    export svc_ppl_CLIENT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientId | jq -r ".value")
-    
-    if [ $NO_CLOBBER -eq 0 ] 
+    # store az info into variables
+    export TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
+    export SUB_ID=$(echo $ACCOUNT | jq -r ".id")
+
+    export CLIENT_SECRET=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientSecret | jq -r ".value")
+    export CLIENT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name SPTfClientId | jq -r ".value")
+
+    if [ $NO_CLOBBER -eq 0 ]
     then
         # create terraform.tfvars and replace template values
         create_tfvars
@@ -145,27 +145,50 @@ function create_new_deployment()
 {
   # ============== CREATE TFVARS =================
   # store az info into variables
-  export svc_ppl_TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
-  export svc_ppl_SUB_ID=$(echo $ACCOUNT | jq -r ".id")
-  export svc_ppl_CLIENT_SECRET=$(az ad sp create-for-rbac --skip-assignment -n http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query password -o tsv)
-  export svc_ppl_CLIENT_ID=$(az ad sp show --id http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query appId -o tsv)
-  
+  export TENANT_ID=$(echo $ACCOUNT | jq -r ".tenantId")
+  export SUBSCRIPTION_ID=$(echo $ACCOUNT | jq -r ".id")
+  export CLIENT_SECRET=$(az ad sp create-for-rbac --skip-assignment -n http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query password -o tsv)
+  export CLIENT_ID=$(az ad sp show --id http://${svc_ppl_Name}-sp-${svc_ppl_Environment} --query appId -o tsv)
+
   create_tfvars
 
-  # ============== CREATE RESOURCES =================
-  # Grant Application.ReadWrite.All and Directory.Read.All API access to Service Principal (${svc_ppl_Name}-tf-sp)
-  # Get service principal App ID
-  export servicePricipalId=$svc_ppl_CLIENT_ID #$(az ad sp list --query "[?appDisplayName=='${svc_ppl_Name}-tf-sp-${svc_ppl_Environment}'].appId | [0]" --all) 
-  servicePricipalId=$(eval echo $servicePricipalId)
-  echo "Service Principal AppID: " $servicePricipalId
+  # ============== SP PERMISSIONS =================
+  # TODO: To be addressed in a future issue if we need these MSGraph permissions
+  # More info at https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_configuration#method-2-api-access-with-admin-consent
 
-  ## TODO: Add needed roles/permissions to the SP!
-  # A link on role assignment https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli
-  # A link to available roles https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
+  # Get MSGraphId
+  export graphId=$(az ad sp list --query "[?appDisplayName=='Microsoft Graph'].appId | [0]" --all)
+  graphId=$(eval echo $graphId)
+  echo "Service MSGraph AppID: " $graphId
 
+  # Get MSGraph Permission variables
+
+  export appRoleAppReadWriteAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Application.ReadWrite.All'].id | [0]")
+  appRoleAppReadWriteAll=$(eval echo $appRoleAppReadWriteAll)
+  echo "Application- Application.ReadWrite.All ID: " $appRoleAppReadWriteAll
+
+  export appRoleDirReadAll=$(az ad sp show --id $graphId --query "appRoles[?value=='Directory.ReadWrite.All'].id | [0]")
+  appRoleDirReadAll=$(eval echo $appRoleDirReadAll)
+  echo "application- Directory.Read.All id:" $appRoleDirReadAll
+
+  # Add App persmission
+  az ad app permission add --id $CLIENT_ID --api $graphId --api-permissions $appRoleDirReadAll=Role $appRoleAppReadWriteAll=Role
+
+  # Make permissions effective
+  az ad app permission grant --id $CLIENT_ID --api $graphId
 
   # Admin consent
-  az ad app permission admin-consent --id $servicePricipalId
+  # az ad app permission admin-consent --id $CLIENT_ID
+
+  # Add Contributor and User Access Administrator Roles required by CAF
+  export servicePrincipalObjId=$(az ad sp show --id $CLIENT_ID --query objectId -o tsv)
+  servicePrincipalObjId=$(eval echo $servicePrincipalObjId)
+  echo "Service Principal Object ID: " $servicePrincipalObjId
+
+  az role assignment create --assignee $servicePrincipalObjId --role "Contributor" --subscription $SUBSCRIPTION_ID
+  az role assignment create --assignee $servicePrincipalObjId --role "User Access Administrator" --subscription $SUBSCRIPTION_ID
+
+  # ============== CREATE RESOURCES =================
 
   # create tf_state resource group
   echo "Creating the Deployment Resource Group"

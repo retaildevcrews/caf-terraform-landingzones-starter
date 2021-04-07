@@ -70,11 +70,11 @@ function parse_args()
         -f|--first-run)
           FIRST_RUN=1
           shift 1
-          ;;      
+          ;;
         -i|--init)
           INIT=1
           shift 1
-          ;;                
+          ;;
         -l|--location)
           if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
             LOCATION=$2
@@ -82,7 +82,7 @@ function parse_args()
           else
             die "Error: Argument for $1 is missing"
           fi
-          ;;      
+          ;;
         -t|--tenant-name)
           if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
             TENANT_NAME=$2
@@ -90,7 +90,7 @@ function parse_args()
           else
             die "Error: Argument for $1 is missing"
           fi
-          ;;      
+          ;;
         -*|--*=) # unsupported flags
           print_usage
           die "Error: Unsupported flag $1"
@@ -101,7 +101,7 @@ function parse_args()
           ;;
       esac
     done
-    
+
     # set positional arguments in their proper place
     eval set -- "$PARAMS"
 
@@ -127,11 +127,11 @@ function parse_args()
     echo -e "APP_NAME: \t$APP_NAME"
     echo -e "TENANT_NAME: \t$TENANT_NAME"
     echo -e "ENV: \t\t$ENV"
-    echo -e "LOCATION: \t$LOCATION"    
+    echo -e "LOCATION: \t$LOCATION"
     echo ""
 }
 
-# $1 = prompt text 
+# $1 = prompt text
 # $2 = if response is Nn, =0 or missing exits, =1 returns 1
 function confirm_action()
 {
@@ -141,7 +141,7 @@ function confirm_action()
       read -p "$prompt" yn
       case $yn in
           [Y]* ) return 0;;
-          [Nn]* ) 
+          [Nn]* )
             if [ -z $2 ] || [ $2 -eq 0 ]
             then
                 exit 1
@@ -158,12 +158,12 @@ check_errors=()
 function check_exists()
 {
     if (eval "$2 --output tsv | grep $3") > /dev/null 2>&1
-    then 
+    then
       msg="$1 '$3' already exists."
       check_errors+=("$msg")
-    else 
+    else
       ok "$1 '$3' does not exist."
-    fi  
+    fi
 }
 
 function check_length()
@@ -174,7 +174,7 @@ function check_length()
       msg="The name is too long (>$2).\n${$1}: ${Name_Size}"
       check_errors+=("$msg")
     else
-      ok "${1} passes length validation: ${Name_Size} < $2"  
+      ok "${1} passes length validation: ${Name_Size} < $2"
     fi
 }
 
@@ -183,8 +183,8 @@ function Build_Resource_Names()
 {
   export TFRG_NAME=$(./build-resource-name.sh -r resourcegroup -n $APP_NAME -e $ENV -t $TENANT_NAME)-tf
   export TFSA_NAME=$(./build-resource-name.sh -r storageaccount -n $APP_NAME -e $ENV -t $TENANT_NAME)tf
-  export KEYVAULT_NAME=$(./build-resource-name.sh -r keyvault -n $APP_NAME -e $ENV -t $TENANT_NAME)   
-  export TFCI_NAME=citfstate 
+  export KEYVAULT_NAME=$(./build-resource-name.sh -r keyvault -n $APP_NAME -e $ENV -t $TENANT_NAME)
+  export TFCI_NAME=citfstate
   export APPSA_NAME=$(./build-resource-name.sh -r storageaccount -n $APP_NAME -e $ENV -t $TENANT_NAME)app
 }
 
@@ -213,9 +213,9 @@ function Check_Resource_Names()
     check_exists "Storage Account" "az storage account list" $APPSA_NAME
 
     # KEYVAULT
-    check_exists "KeyVault" "az keyvault list" $KEYVAULT_NAME   
+    check_exists "KeyVault" "az keyvault list" $KEYVAULT_NAME
 
-    if [ ${#check_errors[@]} -gt 0 ] 
+    if [ ${#check_errors[@]} -gt 0 ]
     then
       for i in "${check_errors[@]}"
       do
@@ -251,12 +251,17 @@ function Setup_Global_Environment()
 function Prepare_Terraform()
 {
     ARGS=()
-    if [ -f "terraform.tfvars" ]
+    if [ -f '../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars' ]
     then
         confirm_action "terraform.tfvars exists, overwrite?" 1
         if [ $? -eq 1 ]
         then
             ARGS=("-n") # NO CLOBBER
+        fi
+
+        if [ $? -eq 0 ]
+        then
+            rm "../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars"
         fi
     fi
 
@@ -279,11 +284,11 @@ function Prepare_Environment()
 
 function Initialize_Terraform()
 {
-    if [ ! -d ./.terraform ] || [ $INIT -eq 1 ]
-    then
-      # The TF variables are initialized in _prepare-terraform
-        terraform init -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate"
-    fi
+  if [ ! -d ./.terraform ] || [ $INIT -eq 1 ]
+  then
+    # The TF variables are initialized in _prepare-terraform
+      ( cd "../enterprise_scale/construction_sets/aks" && terraform init -upgrade -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate" )
+  fi
 }
 
 function Validate_Terraform()
@@ -298,6 +303,5 @@ parse_args "$@"
 
 Prepare_Environment
 
-# TODO: pending integration with the TF script
-#Initialize_Terraform
-#Validate_Terraform
+Initialize_Terraform
+Validate_Terraform
