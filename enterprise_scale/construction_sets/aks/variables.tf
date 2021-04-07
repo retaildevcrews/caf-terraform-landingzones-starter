@@ -138,3 +138,48 @@ variable "vnet_peerings" {
 variable "ip_groups" {
   default = {}
 }
+
+variable "location" {
+    description = ""
+    type = string
+}
+
+variable "name" {
+    description = ""
+    type = string
+}
+
+variable "shortname" {
+    description = ""
+    type = string
+}
+
+variable "env" {
+    description = ""
+    type = string
+}
+
+variable "tenant_name" {
+    description = ""
+    type = string
+}
+
+variable "tenant_id" {
+    description = ""
+    type = string
+}
+
+variable "subscription_id" {
+    description = ""
+    type = string
+}
+
+variable "client_id" {
+    description = ""
+    type = string
+}
+
+variable "client_secret" {
+    description = ""
+    type = string
+}
