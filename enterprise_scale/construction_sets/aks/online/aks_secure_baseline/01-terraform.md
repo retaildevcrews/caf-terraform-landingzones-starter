@@ -49,7 +49,7 @@ az account set -s {subscription name or id}
 export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
 
 # Run the script in the provision_environment directory
-./provision-environment.sh -a myapp -t <your tenant name> -f
+./provision-environment.sh -a <myapp> -t <your tenant name> -f
 
 # Go to the AKS construction set folder
 cd ../enterprise_scale/construction_sets/aks

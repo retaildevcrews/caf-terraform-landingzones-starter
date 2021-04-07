@@ -30,5 +30,5 @@ az account list -o table
 az account set -s {subscription name or id}
 
 # Run the script
-./provision-environment.sh -a myapp -t <your tenant name> -f
+./provision-environment.sh -a <myapp> -t <your tenant name> -f
 ```
