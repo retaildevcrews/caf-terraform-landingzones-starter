@@ -35,3 +35,10 @@ output "vnets" {
 output "azurerm_firewalls" {
   value = module.caf.azurerm_firewalls
 }
+
+output "azuread_group" {
+  value = {
+    for key, azuread_group in module.caf.azuread_groups : key => azuread_group
+  }
+  sensitive = false
+}

@@ -3,9 +3,10 @@ data "azurerm_client_config" "current" {}
 locals {
   azuread_groups_interface = {
     for key, azuread_group in var.azuread_groups : key => { 
+        key         = key
         name        = azuread_group.name
         description = azuread_group.description
-        members = {
+        members     = {
             user_principal_names = []
             object_ids = [data.azurerm_client_config.current.object_id]
         }
