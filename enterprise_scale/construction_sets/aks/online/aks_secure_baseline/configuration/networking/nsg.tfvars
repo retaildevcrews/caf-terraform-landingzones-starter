@@ -365,4 +365,10 @@ network_security_group_definition = {
       },
     ]
   }
+
+  jumpbox = {
+    nsg = [
+
+    ]
+  }
 }
