@@ -6,7 +6,7 @@ network_security_group_definition = {
   # This entry is applied to all subnets with no NSG defined
   azure_kubernetes_cluster_nsg = {
     nsg = [
-      
+
     ]
   }
   azure_bastion_nsg = {
@@ -365,21 +365,4 @@ network_security_group_definition = {
       },
     ]
   }
-
-  jumpbox = {
-    nsg = [
-      {
-        name                       = "ssh-inbound-22",
-        priority                   = "200"
-        direction                  = "Inbound"
-        access                     = "Allow"
-        protocol                   = "tcp"
-        source_port_range          = "*"
-        destination_port_range     = "22"
-        source_address_prefix      = "*"
-        destination_address_prefix = "VirtualNetwork"
-      },
-    ]
-  }
-
 }
