@@ -95,7 +95,8 @@ terraform init -upgrade
 # Trigger the deployment of the resources
 eval terraform apply ${parameter_files}
 
-# After Terraform deployment succeeds, assign the newly created AAD group as the AKS cluster admin
+# After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS 
+# (Azure Kubernetes Service) cluster admin
 export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
 export aksClusterName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.cluster_name)
 export aksClusterResourceGroupName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.resource_group_name)
