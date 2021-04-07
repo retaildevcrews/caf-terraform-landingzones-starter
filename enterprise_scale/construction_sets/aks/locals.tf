@@ -1,7 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 locals {
-  # Overwrite the AAD (Azure Active Directory) group variable to add the newly created AAD user as a member
+  # Overwrite the AAD (Azure Active Directory) group variable to add the current user (script executor) as a member
   azuread_groups_interface = {
     for key, azuread_group in var.azuread_groups : key => { 
         key         = key
