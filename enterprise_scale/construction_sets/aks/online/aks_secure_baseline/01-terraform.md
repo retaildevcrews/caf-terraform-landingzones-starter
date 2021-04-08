@@ -66,7 +66,7 @@ parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-fil
 
 ### Global variables for environment
 
-See [environment naming docs](./environment_naming.md) for more information.
+Configure the global settings for the environment. Make sure to pick an appropriate name for the environment to minimize the risk of resource collisions. For personal environments, set `ENVIRONMENT_NAME` to something that is unique to you. For other environments like dev, or preprod, set it to a unique name for that environment. See [environment naming docs](./environment_naming.md) for more information.
 
 ```bash
 
@@ -74,6 +74,7 @@ See [environment naming docs](./environment_naming.md) for more information.
 # examples:
 #   ENVIRONMENT_NAME=pnp-dev
 #   ENVIRONMENT_NAME=mon-dev
+#   ENVIRONMENT_NAME=integration-dev
 #   ENVIRONMENT_NAME=my-unique-env
 ENVIRONMENT_NAME=<environment name>
 # Region for the environment
