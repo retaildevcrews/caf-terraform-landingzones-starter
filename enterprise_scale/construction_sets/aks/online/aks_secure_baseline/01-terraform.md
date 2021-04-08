@@ -31,9 +31,12 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 
 ## Deployment
 
+### Terraform setup
+
 If deploying using the provision_environment script:
 
 ```bash
+
 # Script to execute from bash shell
 
 # Log into Azure
@@ -59,43 +62,51 @@ configuration_folder=online/aks_secure_baseline/configuration
 # Define the configuration files to apply, all tfvars files within the above folder recursively
 parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
 
-# Trigger the deployment of the resources
-eval terraform apply ${parameter_files}
+```
+
+### Global variables for environment
+
+Configure the global settings for the environment. Make sure to pick an appropriate name for the environment to minimize the risk of resource collisions. For personal environments, set `ENVIRONMENT_NAME` to something that is unique to you. For other environments like dev, or preprod, set it to a unique name for that environment. See [environment naming docs](./environment_naming.md) for more information.
+
+```bash
+
+# Name for the environment
+# examples:
+#   ENVIRONMENT_NAME=pnp-dev
+#   ENVIRONMENT_NAME=mon-dev
+#   ENVIRONMENT_NAME=integration-dev
+#   ENVIRONMENT_NAME=my-unique-env
+ENVIRONMENT_NAME=<environment name>
+# Region for the environment
+# examples:
+#   LOCATION=centralus
+#   LOCATION=eastus2
+LOCATION=<azure region>
+
+# Update terraform global settings file.
+
+cat <<EOF > $configuration_folder/global_settings.tfvars
+global_settings = {
+  passthrough    = false
+  random_length  = 0
+  prefix         = "$ENVIRONMENT_NAME"
+  default_region = "region1"
+  regions        = {
+    region1 = "$LOCATION"
+  }
+}
+EOF
 
 ```
 
-If deploying without the provision_environment script:
+### Deploy environment
 
 ```bash
-# Script to execute from bash shell
-
-# Login to your Azure Active Directory tenant
-az login -t {TENANTNID}
-
-# Make sure you are using the right subscription
-az account show -o table
-
-# If you are not in the correct subscription, change it substituting SUBSCRIPTIONID with the proper subscription  id
-az account set --subscription {SUBSCRIPTIONID}
-
-# If you are running in Azure Cloud Shell, you need to run the following additional command:
-export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
-
-# Go to the AKS construction set folder 
-cd caf-terraform-landingzones-starter/enterprise_scale/construction_sets/aks
-
-configuration_folder=online/aks_secure_baseline/configuration
-
-# Define the configuration files to apply, all tfvars files within the above folder recursively
-parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
-
-# Load the CAF module and related providers
-terraform init -upgrade
 
 # Trigger the deployment of the resources
 eval terraform apply ${parameter_files}
 
-# After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS 
+# After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS
 # (Azure Kubernetes Service) cluster admin
 export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
 export aksClusterName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.cluster_name)
