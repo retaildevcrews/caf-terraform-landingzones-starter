@@ -50,8 +50,10 @@ export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId 
 
 # Run the script in the provision_environment directory
 # Sample: ./provision-environment.sh -a <alias>sp -t cse -f
-# Including your alias in <myapp> can help reduce environment collisions
-./provision-environment.sh -a <myapp> -t <your tenant name> -f
+# Including your alias in <app name> can help reduce environment collisions
+app_name=<app name>
+tenant_name=<your tenant name>
+./provision-environment.sh -a $app_name -t $tenant_name -f
 ```
 
 TODO: The following commands can be added to the above deployment bash script once creating an AKS cluster admin has been resolved by a future spike [669](https://github.com/retaildevcrews/ngsa/issues/669).
