@@ -49,7 +49,8 @@ az account set -s {subscription name or id}
 export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
 
 # Run the script in the provision_environment directory
-# Sample: ./provision-environment.sh -a testsp -t cse -f
+# Sample: ./provision-environment.sh -a <alias>sp -t cse -f
+# Including your alias in <myapp> can help reduce environment collisions
 ./provision-environment.sh -a <myapp> -t <your tenant name> -f
 ```
 
