@@ -113,7 +113,7 @@ ENVIRONMENT_NAME=<environment name>
 # Region for the environment
 # examples:
 #   LOCATION=centralus
-#   LOCATION=mon-eastus2
+#   LOCATION=eastus2
 LOCATION=<azure region>
 
 # Update terraform global settings file.
