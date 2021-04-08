@@ -1,6 +1,6 @@
 # Environment Naming
 
-The CAF implmentation of aks-secure-baseline uses a terraform provider, [azurecaf_name](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/azurecaf_name), to name all the azure resources. This provider has different settings that can be used to control the generated names.
+The CAF(Cloud Adoption Framework) implementation of aks-secure-baseline uses a terraform provider, [azurecaf_name](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/azurecaf_name), to name all the azure resources. This provider has different settings that can be used to control the generated names.
 
 To get deterministic names, use these settings. The `global_settings` is set in [global_settings.tfvars](./configuration/global_settings.tfvars)
 
