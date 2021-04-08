@@ -112,6 +112,7 @@ data:
       # and derives the corresponding dynamic configuration from it. https://kubernetes.io/docs/concepts/services-networking/ingress/
       [providers.kubernetesingress]
         ingressClass = "traefik-internal"
+        # Traefik can only watch a0008 for ingress rules
         namespaces = ["a0008"]
         [providers.kubernetesIngress.ingressEndpoint]
           publishedService = "a0008/traefik-ingress-service"
@@ -120,6 +121,8 @@ data:
       [http.middlewares.gzip-compress.compress]
       [http.middlewares.app-gateway-snet.ipWhiteList]
         sourceRange = ["10.100.80.0/22"]
+      [http.middlewares.test-stripprefix.stripPrefix]
+        prefixes = ["/memory", "/cosmos"]
     [entryPoints]
       [entryPoints.metrics]
         address = ":8082"
