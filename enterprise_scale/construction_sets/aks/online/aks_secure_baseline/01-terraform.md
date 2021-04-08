@@ -29,11 +29,14 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 
 <br />
 
-## Deployment
+## Prep for Deployment
+
+### Option 1
 
 If deploying using the provision_environment script:
 
 ```bash
+
 # Script to execute from bash shell
 
 # Log into Azure
@@ -59,10 +62,9 @@ configuration_folder=online/aks_secure_baseline/configuration
 # Define the configuration files to apply, all tfvars files within the above folder recursively
 parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
 
-# Trigger the deployment of the resources
-eval terraform apply ${parameter_files}
-
 ```
+
+### Option 2
 
 If deploying without the provision_environment script:
 
@@ -81,7 +83,7 @@ az account set --subscription {SUBSCRIPTIONID}
 # If you are running in Azure Cloud Shell, you need to run the following additional command:
 export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
 
-# Go to the AKS construction set folder 
+# Go to the AKS construction set folder
 cd caf-terraform-landingzones-starter/enterprise_scale/construction_sets/aks
 
 configuration_folder=online/aks_secure_baseline/configuration
@@ -92,10 +94,52 @@ parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-fil
 # Load the CAF module and related providers
 terraform init -upgrade
 
+```
+
+## Terraform Deployment
+
+### Create global variables
+
+See [environment naming docs](./environment_naming.md) for more information.
+
+```bash
+
+# Name for the environment
+# examples:
+#   ENVIRONMENT_NAME=pnp-dev
+#   ENVIRONMENT_NAME=mon-dev
+#   ENVIRONMENT_NAME=my-unique-env
+ENVIRONMENT_NAME=<environment name>
+# Region for the environment
+# examples:
+#   LOCATION=centralus
+#   LOCATION=mon-eastus2
+LOCATION=<azure region>
+
+# Update terraform global settings file.
+
+cat <<EOF > $configuration_folder/global_settings.tfvars
+global_settings = {
+  passthrough    = false
+  random_length  = 0
+  prefix         = "$ENVIRONMENT_NAME"
+  default_region = "region1"
+  regions        = {
+    region1 = "$LOCATION"
+  }
+}
+EOF
+
+```
+
+### Deploy environment
+
+```bash
+
 # Trigger the deployment of the resources
 eval terraform apply ${parameter_files}
 
-# After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS 
+# After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS
 # (Azure Kubernetes Service) cluster admin
 export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
 export aksClusterName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.cluster_name)
