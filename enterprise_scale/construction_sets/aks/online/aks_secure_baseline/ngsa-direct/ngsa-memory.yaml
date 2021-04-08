@@ -1,16 +1,16 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    name: ngsa
-  name: ngsa
----
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   labels:
+#     name: ngsa
+#   name: ngsa
+# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ngsa-memory
-  namespace: ngsa
+  namespace: a0008
 # We should label our app with proper k8s label
   labels:
     app.kubernetes.io/name: ngsa-memory
@@ -54,13 +54,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ngsa-memory
-  namespace: ngsa
+  namespace: a0008
 spec:
   type: ClusterIP
   ports:
     - port: 8080
-      targetPort: http
-      protocol: TCP
+      targetPort: 8080
       name: http
   selector:
     app: ngsa-memory
@@ -97,28 +96,28 @@ spec:
   - host: bu0001a0008-00.ngsa-monitoring-dev.com
     http:
       paths:
-      - path: /ngsa-memory
+      - path: /memory
         pathType: Prefix
         backend:
           service:
             name: ngsa-memory
             port:
-              number: 80
+              number: 8080
 ---
 # Most probably not used
-apiVersion: v1
-kind: Service
-metadata:
-  name: ngsa-memory-np
-  namespace: ngsa
-  labels:
-    app: ngsa-memory
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ngsa-memory-np
+#   namespace: ngsa
+#   labels:
+#     app: ngsa-memory
 
-spec:
-  type: NodePort
-  selector:
-    app: ngsa-memory
-  ports:
-    - port: 8080
-      targetPort: 8080
-      nodePort: 30080
+# spec:
+#   type: NodePort
+#   selector:
+#     app: ngsa-memory
+#   ports:
+#     - port: 8080
+#       targetPort: 8080
+#       nodePort: 30080
