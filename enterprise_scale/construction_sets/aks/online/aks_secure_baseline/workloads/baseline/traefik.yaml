@@ -72,6 +72,23 @@ subjects:
   name: traefik-ingress-controller
   namespace: a0008
 ---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefik-watch-workloads
+  namespace: ngsa
+  labels:
+    app.kubernetes.io/name: traefik-ingress-ilb
+    app.kubernetes.io/instance: traefik-ingress-ilb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-ingress-controller
+subjects:
+- kind: ServiceAccount
+  name: traefik-ingress-controller
+  namespace: a0008
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -113,7 +130,7 @@ data:
       [providers.kubernetesingress]
         ingressClass = "traefik-internal"
         # Traefik can only watch a0008 for ingress rules
-        namespaces = ["a0008"]
+        namespaces = ["a0008", "ngsa"]
         [providers.kubernetesIngress.ingressEndpoint]
           publishedService = "a0008/traefik-ingress-service"
     # Enable gzip compression
