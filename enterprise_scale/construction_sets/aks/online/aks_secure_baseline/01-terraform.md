@@ -29,9 +29,9 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 
 <br />
 
-## Prep for Deployment
+## Deployment
 
-### Option 1
+### Terraform setup
 
 If deploying using the provision_environment script:
 
@@ -64,41 +64,7 @@ parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-fil
 
 ```
 
-### Option 2
-
-If deploying without the provision_environment script:
-
-```bash
-# Script to execute from bash shell
-
-# Login to your Azure Active Directory tenant
-az login -t {TENANTNID}
-
-# Make sure you are using the right subscription
-az account show -o table
-
-# If you are not in the correct subscription, change it substituting SUBSCRIPTIONID with the proper subscription  id
-az account set --subscription {SUBSCRIPTIONID}
-
-# If you are running in Azure Cloud Shell, you need to run the following additional command:
-export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
-
-# Go to the AKS construction set folder
-cd caf-terraform-landingzones-starter/enterprise_scale/construction_sets/aks
-
-configuration_folder=online/aks_secure_baseline/configuration
-
-# Define the configuration files to apply, all tfvars files within the above folder recursively
-parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
-
-# Load the CAF module and related providers
-terraform init -upgrade
-
-```
-
-## Terraform Deployment
-
-### Create global variables
+### Global variables for environment
 
 See [environment naming docs](./environment_naming.md) for more information.
 
