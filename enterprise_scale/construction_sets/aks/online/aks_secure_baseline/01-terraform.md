@@ -50,18 +50,6 @@ export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId 
 
 # Run the script in the provision_environment directory
 ./provision-environment.sh -a <myapp> -t <your tenant name> -f
-
-# Go to the AKS construction set folder
-cd ../enterprise_scale/construction_sets/aks
-
-configuration_folder=online/aks_secure_baseline/configuration
-
-# Define the configuration files to apply, all tfvars files within the above folder recursively
-parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
-
-# Trigger the deployment of the resources
-eval terraform apply ${parameter_files}
-
 ```
 
 If deploying without the provision_environment script:

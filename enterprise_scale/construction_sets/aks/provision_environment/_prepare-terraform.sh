@@ -107,7 +107,7 @@ function validate_environment()
 # a new terraform.tfvars file with this run values.
 function create_tfvars()
 {
-  TF_VARS_FILE_PATH='../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars'
+  TF_VARS_FILE_PATH='../online/aks_secure_baseline/configuration/terraform.tfvars'
 
   echo "location=\"$svc_ppl_Location\"" >> $TF_VARS_FILE_PATH
   echo "name=\"$svc_ppl_Name\"" >> $TF_VARS_FILE_PATH
