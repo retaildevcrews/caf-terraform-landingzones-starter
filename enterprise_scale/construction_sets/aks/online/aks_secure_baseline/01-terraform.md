@@ -54,7 +54,7 @@ export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId 
 ./provision-environment.sh -a <myapp> -t <your tenant name> -f
 ```
 
-TODO: The following commands can be added to the above deployment bash script once creating an AKS cluster admin has been resolved by a future spike.
+TODO: The following commands can be added to the above deployment bash script once creating an AKS cluster admin has been resolved by a future spike [669](https://github.com/retaildevcrews/ngsa/issues/669).
 
 ```bash
 # After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS
