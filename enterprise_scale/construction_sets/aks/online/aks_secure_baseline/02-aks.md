@@ -66,7 +66,7 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
         namespace: a0008
     spec:
         azureIdentity: podmi-ingress-controller-identity
-        selector: podmi-ingress-controller
+        selector: podmi-ingress-controller-identity
     EOF
     ```
 
