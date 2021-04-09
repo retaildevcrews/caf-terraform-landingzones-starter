@@ -52,7 +52,7 @@ LOCATION=<azure region>
 
 # Update terraform global settings file.
 
-cat <<EOF > $configuration_folder/global_settings.tfvars
+cat <<EOF > online/aks_secure_baseline/configuration/global_settings.tfvars
 global_settings = {
   passthrough    = false
   random_length  = 0
