@@ -31,9 +31,47 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 
 ## Deployment
 
+### Global variables for environment
+
+Configure the global settings for the environment. Make sure to pick an appropriate name for the environment to minimize the risk of resource collisions. For personal environments, set `ENVIRONMENT_NAME` to something that is unique to you. For other environments like dev, or preprod, set it to a unique name for that environment. See [environment naming docs](./environment_naming.md) for more information.
+
+```bash
+
+# Name for the environment
+# examples:
+#   ENVIRONMENT_NAME=pnp-dev
+#   ENVIRONMENT_NAME=mon-dev
+#   ENVIRONMENT_NAME=integration-dev
+#   ENVIRONMENT_NAME=my-unique-env
+ENVIRONMENT_NAME=<environment name>
+# Region for the environment
+# examples:
+#   LOCATION=centralus
+#   LOCATION=eastus2
+LOCATION=<azure region>
+
+# Update terraform global settings file.
+
+cat <<EOF > $configuration_folder/global_settings.tfvars
+global_settings = {
+  passthrough    = false
+  random_length  = 0
+  prefix         = "$ENVIRONMENT_NAME"
+  default_region = "region1"
+  regions        = {
+    region1 = "$LOCATION"
+  }
+}
+EOF
+
+```
+
+### Terraform setup
+
 Deployment is done using the provision environment script. See the script's [README](../../provision_environment/README.md) for usage details.
 
 ```bash
+
 # Script to execute from bash shell
 
 # Log into Azure
@@ -55,6 +93,8 @@ app_name=<app name>
 tenant_name=<your tenant name>
 ./provision-environment.sh -a $app_name -t $tenant_name -f
 ```
+
+### Deploy environment
 
 TODO: The following commands have been altered so the user creates the AKS cluster admin AAD group and the automation of this should be resolved by a future spike [669](https://github.com/retaildevcrews/ngsa/issues/669).
 
