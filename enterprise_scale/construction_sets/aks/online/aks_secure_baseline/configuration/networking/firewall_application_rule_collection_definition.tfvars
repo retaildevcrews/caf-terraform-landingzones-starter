@@ -110,6 +110,25 @@ azurerm_firewall_application_rule_collection_definition = {
           }
         }
       },
+      ghcr = {
+        name = "ghcr"
+        # source_addresses = [
+        # "*",
+        # ]
+        source_ip_groups_keys = [
+        "aks_ip_group1"
+        ]
+        target_fqdns = [
+        "ghcr.io", # GitHub Packages
+        "pkg-containers-az.githubusercontent.com" # specifically added for loderunner image
+        ]
+        protocol = {
+          http = {
+            port = "443"
+            type = "Https"
+          }
+        }
+      },
       mcr = {
         name = "mcr"
         # source_addresses = [
