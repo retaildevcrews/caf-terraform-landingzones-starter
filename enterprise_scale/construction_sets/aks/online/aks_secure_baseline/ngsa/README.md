@@ -88,28 +88,6 @@ helm repo update
 
 ```
 
-## Add GitHub Packages (ghcr.io) to firewall white list
-
-```bash
-From Azure portal locate and navigate the vNet-Hub resource group created by Infrastructure Provisioning, e.g. vnet-hub-re1, then locate the egress firewall resource.
-
-Go to packages application rule collection by navigating to:
-
-[Egress Firwall] > [Setting] > [Rules(Classic)] > [Application rule collection] > [Packages]
-
-Add the a new Target FQDN
-```
-
-| **name**  | **Source type** |      **Source**     | **Protocol:Port** | **Target FQDNs** |
-|-----------|-----------------|---------------------|-------------------|------------------|
-| ghcr      | IP Group        |same as Docker entry |     Https:443     |     ghcr.io      |
-
-```bash
-# Note: This step will be automated on a later Infrastructure Provisioning release.
-# if you skip this step, the pod will not be able to download the image.
-```
-
-
 ## Deploy NGSA with Helm
 ```bash
 The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing.
