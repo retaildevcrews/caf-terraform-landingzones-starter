@@ -181,7 +181,7 @@ metadata:
     app.kubernetes.io/instance: traefik-ingress-ilb
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: erfv-snet-aks_ingress
+    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: mon-dev-snet-aks_ingress
 spec:
   type: LoadBalancer
   loadBalancerIP: 10.100.82.10
@@ -202,7 +202,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik-ingress-ilb
     app.kubernetes.io/instance: traefik-ingress-ilb
-    aadpodidbinding: podmi-ingress-controller
+    aadpodidbinding: podmi-ingress-controller-identity
 spec:
   replicas: 2
   selector:
@@ -222,7 +222,7 @@ spec:
       labels:
         app.kubernetes.io/name: traefik-ingress-ilb
         app.kubernetes.io/instance: traefik-ingress-ilb
-        aadpodidbinding: podmi-ingress-controller
+        aadpodidbinding: podmi-ingress-controller-identity
     spec:
       hostNetwork: false
       serviceAccountName: traefik-ingress-controller
@@ -310,7 +310,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: aks-ingress-contoso-com-tls-secret-csi-akv
+              secretProviderClass: aks-ingress-ngsa-monitoring-dev-com-tls-secret-csi-akv
         - name: data
           emptyDir: {}
       nodeSelector:
