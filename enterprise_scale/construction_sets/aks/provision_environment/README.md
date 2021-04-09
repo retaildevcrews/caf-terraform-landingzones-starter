@@ -30,5 +30,9 @@ az account list -o table
 az account set -s {subscription name or id}
 
 # Run the script
-./provision-environment.sh -a <myapp> -t <your tenant name> -f
+# Sample: ./provision-environment.sh -a <alias>sp -t cse -f
+# Including your alias in <app name> can help reduce environment collisions
+app_name=<app name>
+tenant_name=<your tenant name>
+./provision-environment.sh -a $app_name -t $tenant_name -f
 ```

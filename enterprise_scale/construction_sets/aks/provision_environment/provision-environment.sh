@@ -250,8 +250,9 @@ function Setup_Global_Environment()
 
 function Prepare_Terraform()
 {
+    TF_VARS_FILE_PATH='../online/aks_secure_baseline/configuration/terraform.tfvars'
     ARGS=()
-    if [ -f '../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars' ]
+    if [ -f $TF_VARS_FILE_PATH ]
     then
         confirm_action "terraform.tfvars exists, overwrite?" 1
         if [ $? -eq 1 ]
@@ -261,7 +262,7 @@ function Prepare_Terraform()
 
         if [ $? -eq 0 ]
         then
-            rm "../enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/terraform.tfvars"
+            rm $TF_VARS_FILE_PATH
         fi
     fi
 
@@ -287,7 +288,7 @@ function Initialize_Terraform()
   if [ ! -d ./.terraform ] || [ $INIT -eq 1 ]
   then
     # The TF variables are initialized in _prepare-terraform
-      ( cd "../enterprise_scale/construction_sets/aks" && terraform init -upgrade -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate" )
+      ( cd ".." && terraform init -upgrade -reconfigure -backend-config="resource_group_name=${TFRG_NAME}" -backend-config="storage_account_name=${TFSA_NAME}" -backend-config="container_name=${TFCI_NAME}" -backend-config="key=${svc_ppl_Name}.terraform.tfstate" )
   fi
 }
 
@@ -295,6 +296,19 @@ function Validate_Terraform()
 {
     # Validate the configurations
     terraform validate
+}
+
+function Apply_Terraform()
+{
+  # Go to the AKS construction set folder
+  cd ..
+
+  # Define the configuration files to apply, all tfvars files within the above folder recursively
+  configuration_folder=online/aks_secure_baseline/configuration
+  parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
+
+  # Trigger the deployment of the resources
+  eval terraform apply ${parameter_files}
 }
 
 ############################### MAIN ###################################
@@ -305,3 +319,4 @@ Prepare_Environment
 
 Initialize_Terraform
 Validate_Terraform
+Apply_Terraform

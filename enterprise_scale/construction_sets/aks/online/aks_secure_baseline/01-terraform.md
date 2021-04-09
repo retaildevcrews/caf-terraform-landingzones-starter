@@ -31,39 +31,6 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 
 ## Deployment
 
-### Terraform setup
-
-If deploying using the provision_environment script:
-
-```bash
-
-# Script to execute from bash shell
-
-# Log into Azure
-az login
-
-# show your Azure accounts
-az account list -o table
-
-# select an Azure account
-az account set -s {subscription name or id}
-
-# If you are running in Azure Cloud Shell, you need to run the following additional command:
-export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
-
-# Run the script in the provision_environment directory
-./provision-environment.sh -a <myapp> -t <your tenant name> -f
-
-# Go to the AKS construction set folder
-cd ../enterprise_scale/construction_sets/aks
-
-configuration_folder=online/aks_secure_baseline/configuration
-
-# Define the configuration files to apply, all tfvars files within the above folder recursively
-parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
-
-```
-
 ### Global variables for environment
 
 Configure the global settings for the environment. Make sure to pick an appropriate name for the environment to minimize the risk of resource collisions. For personal environments, set `ENVIRONMENT_NAME` to something that is unique to you. For other environments like dev, or preprod, set it to a unique name for that environment. See [environment naming docs](./environment_naming.md) for more information.
@@ -85,7 +52,7 @@ LOCATION=<azure region>
 
 # Update terraform global settings file.
 
-cat <<EOF > $configuration_folder/global_settings.tfvars
+cat <<EOF > online/aks_secure_baseline/configuration/global_settings.tfvars
 global_settings = {
   passthrough    = false
   random_length  = 0
@@ -99,20 +66,63 @@ EOF
 
 ```
 
-### Deploy environment
+### Terraform setup
+
+Deployment is done using the provision environment script. See the script's [README](../../provision_environment/README.md) for usage details.
 
 ```bash
 
-# Trigger the deployment of the resources
-eval terraform apply ${parameter_files}
+# Script to execute from bash shell
 
+# Log into Azure
+az login
+
+# show your Azure accounts
+az account list -o table
+
+# select an Azure account
+az account set -s {subscription name or id}
+
+# If you are running in Azure Cloud Shell, you need to run the following additional command:
+export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
+
+# Run the script in the provision_environment directory
+# Sample: ./provision-environment.sh -a <alias>sp -t cse -f
+# Including your alias in <app name> can help reduce environment collisions
+app_name=<app name>
+tenant_name=<your tenant name>
+./provision-environment.sh -a $app_name -t $tenant_name -f
+```
+
+### Deploy environment
+
+TODO: The following commands have been altered so the user creates the AKS cluster admin AAD group and the automation of this should be resolved by a future spike [669](https://github.com/retaildevcrews/ngsa/issues/669).
+
+```bash
 # After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS
+# Workaround to have the current user create the AAD group since it is not yet automated in terraform
+
+# fetch current user id
+current_username=$(az account show --query "user.name" -o tsv)
+current_userid=$(az ad user show --id "$current_username" --query "objectId" -o tsv)
+
+# example: cluster_admin_group_name=pnp-dev-cluster-admins
+export cluster_admin_group_name=<name of cluster admin aad group>
+
+# example: cluster_admin_group_description="AKS cluster admins for the pnp-dev environment"
+export cluster_admin_group_description="<describe group>"
+
+# create a group and save the group id
+export aadGroupObjectId=$(az ad group create --display-name $cluster_admin_group_name --mail-nickname $cluster_admin_group_name --description "$cluster_admin_group_description" --query objectId -o tsv)
+
+# add the current user to the newly created group
+az ad group member add -g $cluster_admin_group_name --member-id $current_userid
+
 # (Azure Kubernetes Service) cluster admin
-export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
+# export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
 export aksClusterName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.cluster_name)
 export aksClusterResourceGroupName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.resource_group_name)
 az aks update -g $aksClusterResourceGroupName -n $aksClusterName --aad-admin-group-object-ids $aadGroupObjectId
-
 ```
 
 You are done with deployment of AKS environment, next step is to deploy the application and reference components.
