@@ -56,13 +56,30 @@ tenant_name=<your tenant name>
 ./provision-environment.sh -a $app_name -t $tenant_name -f
 ```
 
-TODO: The following commands can be added to the above deployment bash script once creating an AKS cluster admin has been resolved by a future spike [669](https://github.com/retaildevcrews/ngsa/issues/669).
+TODO: The following commands have been altered so the user creates the AKS cluster admin AAD group and the automation of this should be resolved by a future spike [669](https://github.com/retaildevcrews/ngsa/issues/669).
 
 ```bash
 # After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS
+# Workaround to have the current user create the AAD group since it is not yet automated in terraform
+
+# fetch current user id
+current_username=$(az account show --query "user.name" -o tsv)
+current_userid=$(az ad user show --id "$current_username" --query "objectId" -o tsv)
+
+# example: cluster_admin_group_name=pnp-dev-cluster-admins
+export cluster_admin_group_name=<name of cluster admin aad group>
+
+# example: cluster_admin_group_description="AKS cluster admins for the pnp-dev environment"
+export cluster_admin_group_description="<describe group>"
+
+# create a group and save the group id
+export aadGroupObjectId=$(az ad group create --display-name $cluster_admin_group_name --mail-nickname $cluster_admin_group_name --description "$cluster_admin_group_description" --query objectId -o tsv)
+
+# add the current user to the newly created group
+az ad group member add -g $cluster_admin_group_name --member-id $current_userid
 
 # (Azure Kubernetes Service) cluster admin
-export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
+# export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
 export aksClusterName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.cluster_name)
 export aksClusterResourceGroupName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.resource_group_name)
 az aks update -g $aksClusterResourceGroupName -n $aksClusterName --aad-admin-group-object-ids $aadGroupObjectId
