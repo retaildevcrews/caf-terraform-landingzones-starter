@@ -10,7 +10,18 @@ nodeSelector:
 memcached:
   resources:
     requests:
-      cpu: 
+      cpu:
       memory: 512Mi
 
+image:
+  tag: 1.21.1
 
+git:
+  readonly: true
+  timeout: 5m
+
+sync:
+  state: secret
+
+registry:
+  disableScanning: true

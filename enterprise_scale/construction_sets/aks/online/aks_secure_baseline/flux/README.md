@@ -1,10 +1,10 @@
 # Cluster Baseline Configuration for Continuous Deployment
-![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 The following instructions will set up Flux in a Kubernetes cluster for continuous deployment of our application.
 
-### Prerequisites
+## Prerequisites
 
 - Kubernetes cluster
 - Helm v3
@@ -13,16 +13,20 @@ The following instructions will set up Flux in a Kubernetes cluster for continuo
 To install Fluxctl on Windows Subsystem for Linux:
 
 ```bash
+
 sudo wget https://github.com/fluxcd/flux/releases/download/1.17.1/fluxctl_windows_amd64 -O /usr/bin/fluxctl && sudo chmod +x /usr/bin/fluxctl
+
 ```
 
 To verify installed
 
 ```bash
+
 fluxctl version
+
 ```
 
-### Installation Instructions
+## Installation Instructions
 
 Add FluxCD repository to Helm repos
 
@@ -41,6 +45,7 @@ kubectl create ns cluster-baseline-settings
 ```
 
 Install Flux Helm chart. Make sure you are using the right values depending on the desired configuration.
+
 ```bash
 
 # change to this directory
@@ -65,17 +70,20 @@ helm upgrade -i flux fluxcd/flux --wait \
   --set git.url=$Git_Url \
   --set git.branch=$Git_Branch \
   --set git.path=$Git_Path \
-  --set additionalArgs={--sync-garbage-collection}
+  --set "additionalArgs={--sync-garbage-collection,--listen-metrics=:3031}"
 
 ```
 
 Install the `HelmRelease` Kubernetes custom resource definition
+
 ```bash
 
 kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml
 
 ```
+
 Install the Flux Helm Operator
+
 ``` bash
 
 helm upgrade -i helm-operator fluxcd/helm-operator --wait \
@@ -94,6 +102,7 @@ fluxctl identity --k8s-fwd-ns cluster-baseline-settings
 ```
 
 Your cluster should now sync with your configuration stored in GitHub. By default, the cluster looks for changes in the cluster every five minutes. To force a sync, use the following command.
+
 ``` bash
 
 fluxctl sync --k8s-fwd-ns cluster-baseline-settings
