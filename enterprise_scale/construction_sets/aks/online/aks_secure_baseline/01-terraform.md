@@ -66,7 +66,7 @@ EOF
 
 ```
 
-### Terraform setup
+### Terraform setup & environment deployment
 
 Deployment is done using the provision environment script. See the script's [README](../../provision_environment/README.md) for usage details.
 
@@ -86,21 +86,29 @@ az account set -s {subscription name or id}
 # If you are running in Azure Cloud Shell, you need to run the following additional command:
 export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
 
-# Run the script in the provision_environment directory
+# Navigate to provision_environment directory
+cd ../../provision_environment
+
 # Sample: ./provision-environment.sh -a <alias>sp -t cse -f
 # Including your alias in <app name> can help reduce environment collisions
+# App name must be between 5 and 18 characters in length with no special characters.
+# Tenant name must be between 1 and 5 characters in length with no special characters
+# -f will create new ResourceGroup, ServicePrincipal and StorageAccount for the application and Terraform state management. Eliminate -f for subsequent runs while reusing these resources.
 app_name=<app name>
 tenant_name=<your tenant name>
 ./provision-environment.sh -a $app_name -t $tenant_name -f
 ```
 
-### Deploy environment
+### Cluster admin AAD group creation and assignment
 
 TODO: The following commands have been altered so the user creates the AKS cluster admin AAD group and the automation of this should be resolved by a future spike [669](https://github.com/retaildevcrews/ngsa/issues/669).
 
 ```bash
 # After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS
 # Workaround to have the current user create the AAD group since it is not yet automated in terraform
+
+# Navigate to aks directory
+cd ../aks
 
 # fetch current user id
 current_username=$(az account show --query "user.name" -o tsv)
