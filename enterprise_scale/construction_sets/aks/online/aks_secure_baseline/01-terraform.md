@@ -89,12 +89,12 @@ az account set -s {subscription name or id}
 export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
 
 # Navigate to provision_environment directory
-cd ../../provision_environment
+cd provision_environment
 
 # Sample: ./provision-environment.sh -a <alias>sp -t cse -f
-# Including your alias in <app name> can help reduce environment collisions
+# Including your alias in <app name> can help reduce environment collisions.
 # App name must be between 5 and 18 characters in length with no special characters.
-# Tenant name must be between 1 and 5 characters in length with no special characters
+# Tenant name must be between 1 and 5 characters in length with no special characters.
 # -f will create new ResourceGroup, ServicePrincipal and StorageAccount for the application and Terraform state management. Eliminate -f for subsequent runs while reusing these resources.
 app_name=<app name>
 tenant_name=<your tenant name>
@@ -109,8 +109,8 @@ TODO: The following commands have been altered so the user creates the AKS clust
 # After Terraform deployment succeeds, assign the newly created AAD (Azure Active Directory) group as the AKS
 # Workaround to have the current user create the AAD group since it is not yet automated in terraform
 
-# Navigate to aks directory
-cd ../aks
+# Navigate out to aks directory
+cd ..
 
 # fetch current user id
 current_username=$(az account show --query "user.name" -o tsv)
