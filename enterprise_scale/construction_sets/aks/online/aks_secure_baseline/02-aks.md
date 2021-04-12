@@ -26,6 +26,11 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
 ## Install Flux
 - To install and configure Flux in the cluster, the instructions can be found [here](./flux/README.md).
 
+## Deploy ngsa-app
+- Follow instructions on [ngsa](./ngsa/README.md) to deploy ngsa-app to AKS cluster.
+
+## Deploy loderunner
+- Follow instructions on [loderunner](./loderunner/README.md) to deploy loderunner to AKS cluster.
 
 ## Deploy sample workload
 
