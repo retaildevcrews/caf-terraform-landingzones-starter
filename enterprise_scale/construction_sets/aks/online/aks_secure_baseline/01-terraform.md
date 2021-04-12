@@ -36,8 +36,12 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 Configure the global settings for the environment. Make sure to pick an appropriate name for the environment to minimize the risk of resource collisions. For personal environments, set `ENVIRONMENT_NAME` to something that is unique to you. For other environments like dev, or preprod, set it to a unique name for that environment. See [environment naming docs](./environment_naming.md) for more information.
 
 ```bash
-# Navigate out to aks directory
-cd ../..
+# Export the base directory of the repo
+cd caf-terraform-landingzones-starter
+export REPO_ROOT=$(pwd)
+
+# Navigate to aks directory
+cd $REPO_ROOT/enterprise_scale/construction_sets/aks
 
 # Name for the environment
 # examples:
@@ -89,7 +93,7 @@ az account set -s {subscription name or id}
 export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
 
 # Navigate to provision_environment directory
-cd provision_environment
+cd $REPO_ROOT/enterprise_scale/construction_sets/aks/provision_environment
 
 # Sample: ./provision-environment.sh -a <alias>sp -t cse -f
 # Including your alias in <app name> can help reduce environment collisions.
@@ -110,7 +114,7 @@ TODO: The following commands have been altered so the user creates the AKS clust
 # Workaround to have the current user create the AAD group since it is not yet automated in terraform
 
 # Navigate out to aks directory
-cd ..
+cd $REPO_ROOT/enterprise_scale/construction_sets/aks
 
 # fetch current user id
 current_username=$(az account show --query "user.name" -o tsv)
