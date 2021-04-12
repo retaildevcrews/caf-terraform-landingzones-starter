@@ -36,7 +36,7 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 Configure the global settings for the environment. Make sure to pick an appropriate name for the environment to minimize the risk of resource collisions. For personal environments, set `ENVIRONMENT_NAME` to something that is unique to you. For other environments like dev, or preprod, set it to a unique name for that environment. See [environment naming docs](./environment_naming.md) for more information.
 
 ```bash
-# Navigate out to AKS directory
+# Navigate out to aks directory
 cd ../..
 
 # Name for the environment
