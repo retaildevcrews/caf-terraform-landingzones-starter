@@ -110,7 +110,7 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
         tenantId: $TENANTID_AZURERBAC
     EOF
 
-2. Update Traefik config to pin IP in Aks-ingress Subnet:
+1. Update Traefik config to pin IP in Aks-ingress Subnet:
     ```bash
     # Get the ingress controller subnet name
     ingress_subnet_name=$(terraform output -json | jq -r .vnets.value.vnet_aks_re1.subnets.aks_ingress.name)
@@ -122,7 +122,7 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
     sed -i "s/azure-load-balancer-internal-subnet:.*/azure-load-balancer-internal-subnet:\ ${ingress_subnet_name}/g" online/aks_secure_baseline/workloads/baseline/traefik.yaml
     ```
 
-3. Deploy Traefik & ASP.net sample appplication
+1. Deploy Traefik & ASP.net sample appplication
     ```bash
     kubectl apply -f online/aks_secure_baseline/workloads/baseline
     # It takes 2-3 mins to deploy Traefik & the sample app. Watch all pods to be provision with:
@@ -134,7 +134,11 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
     terraform output -json | jq -r '"https://" + (.domain_name_registrations.value.random_domain.dns_domain_registration_name)'
     ```
 
-4. You can now test the application from a browser. After couple of the minutes the application gateway health check warning should disappear
+1. You can now test the application from a browser. After couple of the minutes the application gateway health check warning should disappear
+If you see "502 Bad Gateway", verify the following
+
+- The AAD group is added to the AKS cluster as an admin. On the Azure portal, open the Kubernetes service created by Terraform, click 'Cluster configuration' in the middle menu, "Admin Azure AD groups" should be set to the newly created AAD group. If not, a manual workaround is to search for the group in the list, add it, and save the changes.
+- You are added to the AAD group as a member.
 
 ## Destroy resources
 
