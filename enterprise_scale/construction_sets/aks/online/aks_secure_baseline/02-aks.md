@@ -50,7 +50,9 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
 
 1. Create Traefik's Azure Managed Identity binding.
 
-   > Create the Traefik Azure Identity and the Azure Identity Binding to let Azure Active Directory Pod Identity to get tokens on behalf of the Traefik's User Assigned Identity and later on assign them to the Traefik's pod.
+   > Create the Traefik Azure Identity and the Azure Identity Binding to let Azure Active Directory Pod Identity to get tokens on behalf of the Traefik's User Assigned Identity and later on assign them to the Traefik's pod. Note that when [defining the `AzureIdentityBinding` resource](https://azure.github.io/aad-pod-identity/docs/demo/standard_walkthrough/#5-deploy-azureidentitybinding) as shown below:
+   - the `azureIdentity` key should have the same value as the `name` key of the `AzureIdentity` resource 
+   - the `selector` key should have the same value as the `aadpodidbinding` key of the Traefik ingress controller deployment in the [traefik.yaml](./workloads/baseline/traefik.yaml) file.
 
     ```yaml
     cat <<EOF | kubectl create -f -
