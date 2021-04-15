@@ -183,6 +183,10 @@ Currently the required AAD group is created via Azure CLI, not as part of the Te
 
 Identify the attributes in the resources that are more commonly customized, i.e., region, name, numbers, into additional Terraform variable files to allow users to define and manage the values in a central location. Can possibly extend and repurpose the existing `resource_group.tfvars` file to keep all the variables in one place, depending on the number and types of variables.
 
+3. Improve troubleshooting experience for the script
+
+The commands in the provisioning script run in a sequential order and have dependency on each other. The output of one command is provided as an input to the next command, e.g.: create a Service Principal before running the Terraform read the cluster name from the Terraform remote state before adding an AAD group to it. Currently the commands are listed as is and the error messages are not always consistent and useful. We can add custom check (if-else conditons for examples) to explicitly call out the dependency and the missing values.
+
 # Links
 [CAF Terraform provider](https://registry.terraform.io/modules/aztfmod/caf/azurerm/latest)
 
