@@ -141,55 +141,6 @@ az aks update -g $aksClusterResourceGroupName -n $aksClusterName --aad-admin-gro
 
 You are done with deployment of AKS environment, next step is to deploy the application and reference components.
 
-## Common troubleshooting tips
-
-1. Key Vault is not fully deleted
-
-When creating a new Key Vault, soft-delete is on by default and any deleted Key Vaults are retained for 90 days by default. If you reuse the same prefix, you might see the error message saying the Key Vault with the same name already exists. To resolve it, search for Key Vault resources in the Azure portal, click "Manage deleted vaults" on the top horizontal menu bar, search for the subscription, and manually delete the vault.
-
-2. Azure CLI (Command Line Interface) is outdated
-
-`az aks update` command requries a certain version of Azure CLI to execute. Run `az --version` to find your Azure CLI version. If your installed version is outdated, the command will fail and prompt you to upgrade it by running `az upgrade`, which will fail if your current version is not 2.11 or higher. In that case, you will need to find alternative commands. For Mac, use `brew update && brew install azure-cli`.
-
-## Customizations
-
-Some updates to the existing CAF (Cloud Adoption Framework) [repo](https://github.com/Azure/caf-terraform-landingzones-starter) that we made to meet the requiremnts for NGSA are:
-
-1. Change the deployment region to minimize latency
-
-The region was updated to `eastus2` to have the resources deployed in the U.S. region for better latency, instead of the Asia region, where the repo was originally developed in.
-
-Specifically, the `region1` variable in `..\enterprise_scale\construction_sets\aks\online\aks_secure_baseline\configuration\global_settings.tfvars` file was changed to `eastu2` and you can provide additional optional regions there.
-
-2. Follow NGSA's naming convention
-
-Updated the resource names to follow the project naming convention to be consistent across different feature crews. One example is the resource group names in `enterprise_scale\construction_sets\aks\online\aks_secure_baseline\configuration\resource_groups.tfvars` file.
-
-3. Allow more predictable and customized resource name prefix
-
-The initial project by default prefix the resource names with a randomly generated 4-letter strings to avoid name collisions when the script is executed repeatedly. We disabled the random prefix by default, and allow users to define their own meaningful prefix including information of deployment environment, region, feature and user name. See `random_length` and `prefix` attributes in  `..\enterprise_scale\construction_sets\aks\online\aks_secure_baseline\configuration\global_settings.tfvars` file.
-
-4. Execute all the command via one shell script
-
-All the commands were included in the `enterprise_scale\construction_sets\aks\provision_environment\provision-environment.sh` script for easy execution.
-
-## Suggestions for future improvement
-
-1. Craate AAD group via Terraform
-
-Currently the required AAD group is created via Azure CLI, not as part of the Terraform module, due to the Service Principal not having sufficient permission to create AAD groups in the subscription. Keeping all Azure resource provisioning in Terraform will make it easier to keep track of their states in a central location (Terraform remote state file), and update and delete them as needed. We can extend the permissions in the Service Principal to allow the Terraform 
-
-2. Abstract more variables to allow more customization
-
-Identify the attributes in the resources that are more commonly customized, i.e., region, name, numbers, into additional Terraform variable files to allow users to define and manage the values in a central location. Can possibly extend and repurpose the existing `resource_group.tfvars` file to keep all the variables in one place, depending on the number and types of variables.
-
-3. Improve troubleshooting experience for the script
-
-The commands in the provisioning script run in a sequential order and have dependency on each other. The output of one command is provided as an input to the next command, e.g.: create a Service Principal before running the Terraform read the cluster name from the Terraform remote state before adding an AAD group to it. Currently the commands are listed as is and the error messages are not always consistent and useful. We can add custom check (if-else conditons for examples) to explicitly call out the dependency and the missing values.
-
-# Links
-[CAF Terraform provider](https://registry.terraform.io/modules/aztfmod/caf/azurerm/latest)
-
 ## Next step
 
 :arrow_forward: [Deploy sample workload into AKS](./02-aks.md)
