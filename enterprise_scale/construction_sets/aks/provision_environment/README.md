@@ -40,7 +40,7 @@ tenant_name=<your tenant name>
 ./provision-environment.sh -a $app_name -t $tenant_name -f
 ```
 
-## Subsecuent runs, update an existing infrastructure
+## Subsequent runs, update an existing infrastructure
 ```bash
 
 Make sure 
