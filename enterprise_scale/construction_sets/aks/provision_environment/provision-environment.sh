@@ -250,21 +250,7 @@ function Setup_Global_Environment()
 
 function Prepare_Terraform()
 {
-    TF_VARS_FILE_PATH='../online/aks_secure_baseline/configuration/terraform.tfvars'
     ARGS=()
-    if [ -f $TF_VARS_FILE_PATH ]
-    then
-        confirm_action "terraform.tfvars exists, overwrite?" 1
-        if [ $? -eq 1 ]
-        then
-            ARGS=("-n") # NO CLOBBER
-        fi
-
-        if [ $? -eq 0 ]
-        then
-            rm $TF_VARS_FILE_PATH
-        fi
-    fi
 
 
     if [ $FIRST_RUN -eq 1 ]
