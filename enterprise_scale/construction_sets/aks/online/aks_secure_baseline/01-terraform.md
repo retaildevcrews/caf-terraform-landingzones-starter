@@ -129,10 +129,10 @@ export cluster_admin_group_description="<describe group>"
 # create a group and save the group id
 export aadGroupObjectId=$(az ad group create --display-name $cluster_admin_group_name --mail-nickname $cluster_admin_group_name --description "$cluster_admin_group_description" --query objectId -o tsv)
 
-# add the current user to the newly created group
+# add the current user to the newly created AAD group
 az ad group member add -g $cluster_admin_group_name --member-id $current_userid
 
-# (Azure Kubernetes Service) cluster admin
+# add AAD group to cluster as admin
 # export aadGroupObjectId=$(terraform output -json | jq -r .azuread_group.value.aks_cluster_re1_admins.id)
 export aksClusterName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.cluster_name)
 export aksClusterResourceGroupName=$(terraform output -json | jq -r .aks_clusters.value.cluster_re1.resource_group_name)
@@ -144,3 +144,4 @@ You are done with deployment of AKS environment, next step is to deploy the appl
 ## Next step
 
 :arrow_forward: [Deploy sample workload into AKS](./02-aks.md)
+
