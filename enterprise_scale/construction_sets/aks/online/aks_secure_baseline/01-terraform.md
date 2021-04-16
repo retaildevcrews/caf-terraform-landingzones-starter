@@ -35,6 +35,11 @@ The following components will be deployed by the Enterprise-Scale AKS Constructi
 
 Configure the global settings for the environment. Make sure to pick an appropriate name for the environment to minimize the risk of resource collisions. For personal environments, set `ENVIRONMENT_NAME` to something that is unique to you. For other environments like dev, or preprod, set it to a unique name for that environment. See [environment naming docs](./environment_naming.md) for more information.
 
+>NOTE: Environment name is used as a prefix to the azure resources and hence [Azure naming restrictions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules) are applied to the resulting name of the resources.
+>It is recommeneded to use short and unique environment name with 1-13 characters in length which includes: 
+>- a through z (lowercase letters)
+>- 0 through 9 (numbers)
+
 ```bash
 # Export the base directory of the repo
 cd caf-terraform-landingzones-starter
