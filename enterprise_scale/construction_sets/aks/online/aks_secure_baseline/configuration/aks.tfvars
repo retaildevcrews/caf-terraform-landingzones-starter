@@ -64,6 +64,7 @@ aks_clusters = {
       os_disk_type          = "Ephemeral"
       os_disk_size_gb       = 80
       orchestrator_version  = "1.19.6"
+      availability_zones    = ["1", "2", "3"]
       tags = {
         "project" = "system services"
       }
@@ -79,10 +80,11 @@ aks_clusters = {
         max_pods             = 30
         vm_size              = "Standard_DS3_v2"
         node_count           = 3
-        os_disk_type          = "Ephemeral"
+        os_disk_type         = "Ephemeral"
         enable_auto_scaling  = false
         os_disk_size_gb      = 120
         orchestrator_version = "1.19.6"
+        availability_zones   = ["1", "2", "3"]
         tags = {
           "project" = "user services"
         }
