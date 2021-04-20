@@ -28,7 +28,10 @@ az account list -o table
 
 # select an Azure account
 az account set -s {subscription name or id}
+```
 
+## First run, create a new infrastructure
+```bash
 # Run the script
 # Sample: ./provision-environment.sh -a <alias>sp -t cse -f
 # Including your alias in <app name> can help reduce environment collisions
@@ -36,3 +39,23 @@ app_name=<app name>
 tenant_name=<your tenant name>
 ./provision-environment.sh -a $app_name -t $tenant_name -f
 ```
+
+## Subsequent runs, update an existing infrastructure
+```bash
+
+Make sure 
+
+The following parameters will be used to recreate the `terraform.tfstate` configuration file.
+
+# Run the script, 
+# Please note that the following parameters must be the same used when the infrastructure was created the very first time.
+# Also note that -f parameter is not specified, this indicates that it is not first run.
+
+app_name=<same app name >
+tenant_name=<same tenant name>
+location_name=<same location name>
+env_name=<same environment name>
+
+./provision-environment.sh -a $app_name -t $tenant_name
+```
+
