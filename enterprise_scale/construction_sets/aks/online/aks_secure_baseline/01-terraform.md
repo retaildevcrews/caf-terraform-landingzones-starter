@@ -107,7 +107,8 @@ cd $REPO_ROOT/enterprise_scale/construction_sets/aks/provision_environment
 # -f will create new ResourceGroup, ServicePrincipal and StorageAccount for the application and Terraform state management. Eliminate -f for subsequent runs while reusing these resources.
 app_name=<app name>
 tenant_name=<your tenant name>
-./provision-environment.sh -a $app_name -t $tenant_name -f
+env=<your environment>
+./provision-environment.sh -a $app_name -t $tenant_name -e $env -f
 ```
 
 ### Cluster admin AAD group creation and assignment
