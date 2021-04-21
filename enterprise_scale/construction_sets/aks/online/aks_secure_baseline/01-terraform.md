@@ -104,11 +104,13 @@ cd $REPO_ROOT/enterprise_scale/construction_sets/aks/provision_environment
 # Including your alias in <app name> can help reduce environment collisions.
 # App name must be between 5 and 18 characters in length with no special characters.
 # Tenant name must be between 1 and 5 characters in length with no special characters.
+# Location should be a valid value from list of azure locations.
 # -f will create new ResourceGroup, ServicePrincipal and StorageAccount for the application and Terraform state management. Eliminate -f for subsequent runs while reusing these resources.
 app_name=<app name>
 tenant_name=<your tenant name>
 env=<your environment>
-./provision-environment.sh -a $app_name -t $tenant_name -e $env -f
+location=<location>
+./provision-environment.sh -a $app_name -t $tenant_name -e $env -l $location -f
 ```
 
 ### Cluster admin AAD group creation and assignment

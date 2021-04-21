@@ -164,7 +164,4 @@ eval terraform destroy \
 # Destroy rsource group and nested resources
 az group delete --name rg-<app_name>-<tenant_name>-<env>-tf
 
-# Delete the Service Principal
-az ad sp delete --id <service-principal-name>
-
 ```
