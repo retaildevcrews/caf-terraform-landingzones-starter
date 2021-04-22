@@ -151,10 +151,17 @@ When finished, please destroy all deployments with:
 kubectl delete -f online/aks_secure_baseline/workloads/baseline
 
 # (When needed) Destroy the resources
+cd $REPO_ROOT/enterprise_scale/construction_sets/aks
+configuration_folder=online/aks_secure_baseline/configuration
+parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
 eval terraform destroy ${parameter_files}
 
 # or if you are facing destroy issues
 eval terraform destroy \
   ${parameter_files} \
   -refresh=false
+  
+# Destroy rsource group and nested resources
+az group delete --name rg-<app_name>-<tenant_name>-<env>-tf
+
 ```
