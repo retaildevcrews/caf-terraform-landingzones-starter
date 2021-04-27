@@ -4,7 +4,9 @@
 
 app:
   args:
-    - --in-memory
+  - --in-memory 
+  - --url-prefix
+  - /memory
   image:
     repository: ghcr.io/retaildevcrews/ngsa-app
     tag: beta

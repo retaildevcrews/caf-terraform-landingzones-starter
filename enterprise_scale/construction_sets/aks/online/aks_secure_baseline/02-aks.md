@@ -142,6 +142,9 @@ If you see "502 Bad Gateway", verify the following
 - The AAD group is added to the AKS cluster as an admin. On the Azure portal, open the Kubernetes service created by Terraform, click 'Cluster configuration' in the middle menu, "Admin Azure AD groups" should be set to the newly created AAD group. If not, a manual workaround is to search for the group in the list, add it, and save the changes.
 - You are added to the AAD group as a member.
 
+## Install Traefik Ingress
+- To install and configure Traefik ingress, instructions can be found [here](./traefik/README.md).
+
 ## Destroy resources
 
 When finished, please destroy all deployments with:
