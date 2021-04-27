@@ -34,6 +34,10 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
 
 ## Deploy sample workload
 
+Navigate to 
+```bash
+ caf-terraform-landingzones-starter/enterprise_scale/construction_sets/aks
+```
 1. Get the AKS Ingress Controller Managed Identity details.
 
     ```bash
