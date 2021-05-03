@@ -137,7 +137,6 @@ Navigate to
     kubectl get ingress -n a0008
     # This website will be available at the public domain below
 
-    terraform output -json | jq -r '"https://" + (.domain_name_registrations.value.random_domain.dns_domain_registration_name)'
     ```
 
 1. You can now test the application from a browser. After couple of the minutes the application gateway health check warning should disappear

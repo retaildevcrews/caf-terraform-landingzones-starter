@@ -45,12 +45,8 @@ keyvault_certificate_requests = {
       x509_certificate_properties = {
 
         # Refer to the documentation step to adjust the public dns domain name setup in internet_domain_name.tfvars
-        # subject            = "CN=*.aks-ingress.ngsa.com"
-        domain_name_registration = {
-          # lz_key = ""
-          key = "random_domain"
-          # subdomain = "*"
-        }
+        subject            = "CN=<your alias>.<your domain name>"    # e.g  test.ngsa-pnp-dev.com
+        
         validity_in_months = 12
         key_usage          = ["keyCertSign"]
         subject_alternative_names = {
