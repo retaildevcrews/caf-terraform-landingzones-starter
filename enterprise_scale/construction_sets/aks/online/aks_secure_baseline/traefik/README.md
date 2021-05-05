@@ -146,3 +146,6 @@ To deploy another application (say App-A) in another namespace (app-ns), these s
     ```
 
 - Apply your app's yaml file
+```bash
+    kubectl apply -f <app deployment file>.yaml
+```

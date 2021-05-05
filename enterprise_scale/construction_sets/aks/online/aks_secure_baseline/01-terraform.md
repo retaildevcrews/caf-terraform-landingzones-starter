@@ -94,32 +94,24 @@ az account list -o table
 # select an Azure account
 az account set -s {subscription name or id}
 
-# If you are running in Azure Cloud Shell, you need to run the following additional command:
-export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
-
-
 ```
 
-### Domain name and alias reord configuration
+### Domain name and alias configuration
 
 ```bash
 
 The following instructions assume that there is an existing App Service Domain registerd and its corresponding DNS Zone has been configured.
 
 # Navigate to application gateway directory 
-
 cd $REPO_ROOT/enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/agw/
 
 # Edit file dns_zone_records.tfvars and replace <your alias>,  <your domain name> , <your domain's resource group name> accordingly.
-
 dns_zone_records.tfvars 
 
 # Edit file agw_application.tfvars and replace <your alias> and <your domain name> accordingly. 
-
 agw_application.tfvars
 
 # Navigate to keyvault directory
-
 cd $REPO_ROOT/enterprise_scale/construction_sets/aks/online/aks_secure_baseline/configuration/keyvault/
 
 # Edit file certificate_requests.tfvars and replace <your alias> and <your domain name> accordingly. 
@@ -128,8 +120,9 @@ certificate_requests.tfvars
 # Navigate to provision_environment directory
 cd $REPO_ROOT/enterprise_scale/construction_sets/aks/provision_environment
 ```
-
 ```bash
+# If you are running in Azure Cloud Shell, you need to run the following additional command:
+export TF_VAR_logged_user_objectId=$(az ad signed-in-user show --query objectId -o tsv)
 
 # Sample: ./provision-environment.sh -a <alias>sp -t cse -f
 # Including your alias in <app name> can help reduce environment collisions.

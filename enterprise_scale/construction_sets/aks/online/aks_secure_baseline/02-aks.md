@@ -136,6 +136,7 @@ Navigate to
     # Ensure sample app ingress has IP assigned
     kubectl get ingress -n a0008
     # This website will be available at the public domain below
+    https://<alias>.<domain>/memory
 
     ```
 
