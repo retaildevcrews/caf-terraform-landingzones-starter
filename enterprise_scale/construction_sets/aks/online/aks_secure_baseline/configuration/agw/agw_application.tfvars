@@ -9,12 +9,7 @@ application_gateway_applications = {
         name                           = "public-443"
         front_end_ip_configuration_key = "public"
         front_end_port_key             = "443"
-        # host_name                      = "www.y4plq60ubbbiop9w1dh36tlgfpxqctfj.com"
-        dns_zone = {
-          key = "dns_zone1"
-          record_type = "a"
-          record_key = "agw"
-        }
+        host_name                      = "<your alias>.<your domain name>"  # e.g.    test.ngsa-pnp-dev.com
 
         request_routing_rule_key       = "default"
         # key_vault_secret_id = ""

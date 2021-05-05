@@ -34,6 +34,10 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
 
 ## Deploy sample workload
 
+Navigate to 
+```bash
+ caf-terraform-landingzones-starter/enterprise_scale/construction_sets/aks
+```
 1. Get the AKS Ingress Controller Managed Identity details.
 
     ```bash
@@ -132,8 +136,8 @@ Please review the Baseline components that are deployed at [cluster-baseline-set
     # Ensure sample app ingress has IP assigned
     kubectl get ingress -n a0008
     # This website will be available at the public domain below
+    https://<alias>.<domain>/memory
 
-    terraform output -json | jq -r '"https://" + (.domain_name_registrations.value.random_domain.dns_domain_registration_name)'
     ```
 
 1. You can now test the application from a browser. After couple of the minutes the application gateway health check warning should disappear
@@ -141,6 +145,9 @@ If you see "502 Bad Gateway", verify the following
 
 - The AAD group is added to the AKS cluster as an admin. On the Azure portal, open the Kubernetes service created by Terraform, click 'Cluster configuration' in the middle menu, "Admin Azure AD groups" should be set to the newly created AAD group. If not, a manual workaround is to search for the group in the list, add it, and save the changes.
 - You are added to the AAD group as a member.
+
+## Install Traefik Ingress
+- To install and configure Traefik ingress, instructions can be found [here](./traefik/README.md).
 
 ## Destroy resources
 
